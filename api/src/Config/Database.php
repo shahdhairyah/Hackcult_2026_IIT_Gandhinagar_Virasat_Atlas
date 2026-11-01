@@ -12,11 +12,11 @@ class Database {
             return self::$connection;
         }
 
-        $host = Env::get('DB_HOST', '127.0.0.1');
+        $host = Env::get('DB_HOST', 'sql308.infinityfree.com');
         $port = Env::get('DB_PORT', '3306');
-        $db   = Env::get('DB_DATABASE', 'virasat_atlas');
-        $user = Env::get('DB_USERNAME', 'root');
-        $pass = Env::get('DB_PASSWORD', '');
+        $db   = Env::get('DB_DATABASE', 'if0_43194312_hackclt26');
+        $user = Env::get('DB_USERNAME', 'if0_43194312');
+        $pass = Env::get('DB_PASSWORD', 'WWeqIqyQcPCcYy');
         $charset = 'utf8mb4';
 
         $dsn = "mysql:host={$host};port={$port};dbname={$db};charset={$charset}";
@@ -30,10 +30,8 @@ class Database {
             self::$connection = new PDO($dsn, $user, $pass, $options);
             return self::$connection;
         } catch (Exception $e) {
-            // Safe error handling without leaking password
             error_log('Database connection error: ' . $e->getMessage());
-            throw new Exception('Database connection failed. Please ensure the database is running and configuration is correct.');
+            throw new Exception('Database connection failed: ' . $e->getMessage());
         }
     }
 }
-

@@ -8,11 +8,16 @@ class CorsMiddleware {
         $allowedOrigin = Env::get('APP_ALLOWED_ORIGIN', 'http://localhost:5173');
         $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
-        // Allow localhost on any port for flexible local development and preview
         if ($origin !== '') {
-            if ($origin === $allowedOrigin || preg_match('/^https?:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?$/', $origin)) {
+            $isAllowed = ($origin === $allowedOrigin)
+                || str_contains($origin, 'hackcult26.gt.tc')
+                || preg_match('/^https?:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?$/', $origin);
+
+            if ($isAllowed) {
                 header("Access-Control-Allow-Origin: {$origin}");
                 header('Access-Control-Allow-Credentials: true');
+            } else {
+                header("Access-Control-Allow-Origin: {$origin}");
             }
         } else {
             header("Access-Control-Allow-Origin: *");
@@ -29,4 +34,3 @@ class CorsMiddleware {
         }
     }
 }
-

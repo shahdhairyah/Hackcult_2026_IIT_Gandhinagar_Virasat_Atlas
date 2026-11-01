@@ -1,0 +1,27 @@
+# Virasat Atlas - Root Apache Configuration for InfinityFree / cPanel (htdocs)
+Options -Indexes
+RewriteEngine On
+RewriteBase /
+
+# 1. Protect sensitive configuration and source files
+<FilesMatch "^\.env|.*\.sql$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# 2. API Routing: Route any /api/* requests directly to api/index.php
+RewriteCond %{REQUEST_URI} ^/api(/.*)?$ [NC]
+RewriteRule ^api(/.*)?$ api/index.php [QSA,L]
+
+# 3. Serve existing files or directories directly (CSS, JS, images, installer, test scripts)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 4. SPA Client Routing: Send all remaining route paths to React index.html
+RewriteRule ^ index.html [L]
+
+# 5. Proper MIME Types
+AddType image/svg+xml .svg .svgz
+AddType application/javascript .js
+AddType text/css .css
