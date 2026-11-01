@@ -12,6 +12,7 @@ import WorkspacePage from '../features/workspace/WorkspacePage';
 import ContributePage from '../features/workspace/ContributePage';
 import ReviewQueuePage from '../features/review/ReviewQueuePage';
 import PitchDeckPage from '../features/pitch/PitchDeckPage';
+import AdminDashboardPage from '../features/admin/AdminDashboardPage';
 
 // Protected Route Guard
 function RequireAuth({ children, minimumRole = 'researcher' }) {
@@ -84,6 +85,14 @@ export const router = createBrowserRouter([
         element: (
           <RequireAuth minimumRole="reviewer">
             <ReviewQueuePage />
+          </RequireAuth>
+        )
+      },
+      {
+        path: 'admin',
+        element: (
+          <RequireAuth minimumRole="reviewer">
+            <AdminDashboardPage />
           </RequireAuth>
         )
       },

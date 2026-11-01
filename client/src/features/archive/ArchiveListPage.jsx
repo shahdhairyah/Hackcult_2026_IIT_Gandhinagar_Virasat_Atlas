@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../../api/client';
+import { useTranslation } from '../../utils/i18n';
 import EmptyState from '../../components/EmptyState';
 import ErrorState from '../../components/ErrorState';
-import { Search, Filter, MapPin, Calendar, ShieldCheck, ArrowRight, X } from 'lucide-react';
-
-const TYPES = [
-  { value: '', label: 'All Heritage Types' },
-  { value: 'monument', label: 'Monuments' },
-  { value: 'architecture', label: 'Architecture / Vavs' },
-  { value: 'craft', label: 'Living Crafts' },
-  { value: 'document', label: 'Documents & Epigraphy' },
-  { value: 'field_note', label: 'Field Notes' }
-];
+import { Search, Filter, MapPin, Calendar, ShieldCheck, ArrowRight, X, Download } from 'lucide-react';
 
 export default function ArchiveListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useTranslation();
 
   const [items, setItems] = useState([]);
   const [meta, setMeta] = useState({ page: 1, per_page: 12, total: 0, total_pages: 1 });
@@ -30,6 +23,15 @@ export default function ArchiveListPage() {
   const page = parseInt(searchParams.get('page') || '1', 10);
 
   const [searchInput, setSearchInput] = useState(q);
+
+  const TYPES = [
+    { value: '', label: t('filter_all_types', 'All Heritage Types') },
+    { value: 'monument', label: t('filter_monuments', 'Monuments') },
+    { value: 'architecture', label: t('filter_architecture', 'Architecture / Vavs') },
+    { value: 'craft', label: t('filter_crafts', 'Living Crafts') },
+    { value: 'document', label: t('filter_documents', 'Documents & Epigraphy') },
+    { value: 'field_note', label: t('filter_fieldnotes', 'Field Notes') }
+  ];
 
   useEffect(() => {
     fetchItems();
@@ -106,7 +108,7 @@ export default function ArchiveListPage() {
             fontWeight: 600,
             marginBottom: '0.75rem'
           }}>
-            Digital Cultural &amp; Architectural Heritage Archive
+            {t('hero_pretitle', 'Digital Cultural & Architectural Heritage Archive')}
           </div>
           <h1 style={{
             fontSize: '2.4rem',
@@ -114,7 +116,7 @@ export default function ArchiveListPage() {
             marginBottom: '1rem',
             color: 'var(--color-paper-50)'
           }}>
-            Explore India's cultural memory, one place at a time.
+            {t('hero_title', "Explore India's cultural memory, one place at a time.")}
           </h1>
           <p style={{
             fontSize: '1.05rem',
@@ -122,7 +124,7 @@ export default function ArchiveListPage() {
             lineHeight: 1.6,
             marginBottom: '2rem'
           }}>
-            Preserving architectural observations, historical manuscripts, stepwell hydrology, and living traditions with rigorous provenance and attribution.
+            {t('hero_desc', 'Preserving architectural observations, historical manuscripts, stepwell hydrology, and living traditions with rigorous provenance and attribution.')}
           </p>
 
           {/* Search bar */}
@@ -131,7 +133,7 @@ export default function ArchiveListPage() {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Search by monument, region, keyword, or inscription..."
+                placeholder={t('search_placeholder', 'Search by monument, region, keyword, or inscription...')}
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 style={{
@@ -149,7 +151,7 @@ export default function ArchiveListPage() {
               }} />
             </div>
             <button type="submit" className="btn btn-primary" style={{ padding: '0 1.5rem', fontSize: '0.95rem' }}>
-              Search
+              {t('search_btn', 'Search')}
             </button>
           </form>
         </div>
@@ -181,8 +183,8 @@ export default function ArchiveListPage() {
               onChange={(e) => updateFilter('type', e.target.value)}
               style={{ width: 'auto', padding: '0.45rem 0.8rem', fontSize: '0.85rem' }}
             >
-              {TYPES.map(t => (
-                <option key={t.value} value={t.value}>{t.label}</option>
+              {TYPES.map(tOption => (
+                <option key={tOption.value} value={tOption.value}>{tOption.label}</option>
               ))}
             </select>
 
@@ -207,8 +209,8 @@ export default function ArchiveListPage() {
             )}
           </div>
 
-          {/* Sort & Count */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {/* Sort & Archival Export Quick Link */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--color-stone-600)' }}>
               Showing <strong>{items.length}</strong> of <strong>{meta.total}</strong> records
             </span>
@@ -219,10 +221,22 @@ export default function ArchiveListPage() {
               onChange={(e) => updateFilter('sort', e.target.value)}
               style={{ width: 'auto', padding: '0.45rem 0.8rem', fontSize: '0.85rem' }}
             >
-              <option value="latest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="title">Title (A-Z)</option>
+              <option value="latest">{t('sort_latest', 'Newest First')}</option>
+              <option value="oldest">{t('sort_oldest', 'Oldest First')}</option>
+              <option value="title">{t('sort_title', 'Title (A-Z)')}</option>
             </select>
+
+            <a
+              href="/api/v1/archive-export?format=json"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-outline btn-sm"
+              title="Download ISO 14721 OAIS Archival Manifest"
+              style={{ padding: '0.4rem 0.75rem', fontSize: '0.8rem' }}
+            >
+              <Download size={13} />
+              <span>OAIS Manifest</span>
+            </a>
           </div>
         </div>
 
@@ -381,4 +395,3 @@ export default function ArchiveListPage() {
     </div>
   );
 }
-

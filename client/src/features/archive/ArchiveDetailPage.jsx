@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../../api/client';
 import { useAuth } from '../../app/AuthContext';
+import { useTranslation } from '../../utils/i18n';
 import StatusBadge from '../../components/StatusBadge';
 import TranscriptEditor from '../../components/TranscriptEditor';
+import DigitalTwin3DViewer from '../../components/DigitalTwin3DViewer';
 import ErrorState from '../../components/ErrorState';
 import { 
   ArrowLeft, 
@@ -17,21 +19,41 @@ import {
   Tag, 
   Building, 
   Info,
-  CheckCircle2
+  CheckCircle2,
+  Bookmark,
+  Box,
+  Image as ImageIcon
 } from 'lucide-react';
 
 export default function ArchiveDetailPage() {
   const { id } = useParams();
-  const { user, hasRole } = useAuth();
+  const { user, hasRole, isAuthenticated } = useAuth();
+  const { t } = useTranslation();
   const [item, setItem] = useState(null);
   const [relatedItems, setRelatedItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [mediaTab, setMediaTab] = useState('photo'); // 'photo' | '3d'
+  const [savingBookmark, setSavingBookmark] = useState(false);
 
   useEffect(() => {
     fetchItem();
     fetchRelated();
   }, [id]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      api.get('/saved-items')
+        .then(res => {
+          const match = (res.data || []).some(s => String(s.archive_item_id) === String(id));
+          setIsSaved(match);
+        })
+        .catch(() => {});
+    } else {
+      setIsSaved(false);
+    }
+  }, [id, isAuthenticated]);
 
   async function fetchRelated() {
     try {
@@ -54,6 +76,27 @@ export default function ArchiveDetailPage() {
       setLoading(false);
     }
   }
+
+  const handleToggleBookmark = async () => {
+    if (!isAuthenticated) {
+      alert('Please sign in to save records to your researcher workspace.');
+      return;
+    }
+    setSavingBookmark(true);
+    try {
+      if (isSaved) {
+        await api.delete(`/saved-items/${id}`);
+        setIsSaved(false);
+      } else {
+        await api.post(`/saved-items/${id}`, { notes: `Referenced for ${item?.title}` });
+        setIsSaved(true);
+      }
+    } catch (err) {
+      alert(err.message || 'Failed to update saved item.');
+    } finally {
+      setSavingBookmark(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -95,20 +138,42 @@ export default function ArchiveDetailPage() {
         </span>
       </div>
 
-      {/* Title & Badges */}
-      <div style={{ marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
-          <StatusBadge status={item.status} />
-          <span className="badge badge-type">{item.item_type}</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', color: 'var(--color-stone-600)' }}>
-            <MapPin size={14} color="var(--color-bronze-600)" />
-            {item.location_name || item.region}
-          </span>
+      {/* Title & Actions Bar */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        flexWrap: 'wrap',
+        gap: '1.5rem',
+        marginBottom: '2rem'
+      }}>
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
+            <StatusBadge status={item.status} />
+            <span className="badge badge-type">{item.item_type}</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', color: 'var(--color-stone-600)' }}>
+              <MapPin size={14} color="var(--color-bronze-600)" />
+              {item.location_name || item.region}
+            </span>
+          </div>
+
+          <h1 style={{ fontSize: '2.2rem', color: 'var(--color-ink-950)', lineHeight: 1.25 }}>
+            {item.title}
+          </h1>
         </div>
 
-        <h1 style={{ fontSize: '2.2rem', color: 'var(--color-ink-950)', lineHeight: 1.25 }}>
-          {item.title}
-        </h1>
+        {/* Action Buttons: Bookmark */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <button
+            onClick={handleToggleBookmark}
+            disabled={savingBookmark}
+            className={`btn btn-sm ${isSaved ? 'btn-primary' : 'btn-outline'}`}
+            title={isSaved ? 'Remove from saved items' : 'Bookmark this record'}
+          >
+            <Bookmark size={15} fill={isSaved ? 'currentColor' : 'none'} />
+            <span>{isSaved ? t('bookmarked', 'Bookmarked') : t('bookmark_record', 'Bookmark Record')}</span>
+          </button>
+        </div>
       </div>
 
       {/* Main Grid: Media & Observation + Metadata Sidebar */}
@@ -120,8 +185,61 @@ export default function ArchiveDetailPage() {
       }}>
         {/* Left Column: Media Viewer & Narrative */}
         <div>
-          {/* Master Media Display */}
-          {primaryMedia ? (
+          {/* Media View Selector Tabs (FR-18) */}
+          <div style={{
+            display: 'flex',
+            gap: '0.5rem',
+            marginBottom: '0.85rem',
+            borderBottom: '1px solid var(--color-paper-200)',
+            paddingBottom: '0.35rem'
+          }}>
+            <button
+              onClick={() => setMediaTab('photo')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.4rem 0.85rem',
+                fontSize: '0.85rem',
+                fontWeight: mediaTab === 'photo' ? 600 : 400,
+                color: mediaTab === 'photo' ? 'var(--color-bronze-600)' : 'var(--color-stone-600)',
+                background: mediaTab === 'photo' ? 'var(--color-paper-100)' : 'transparent',
+                border: 'none',
+                borderRadius: 'var(--radius-sm)',
+                cursor: 'pointer'
+              }}
+            >
+              <ImageIcon size={14} />
+              Master Photographic Media
+            </button>
+
+            <button
+              onClick={() => setMediaTab('3d')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.4rem 0.85rem',
+                fontSize: '0.85rem',
+                fontWeight: mediaTab === '3d' ? 600 : 400,
+                color: mediaTab === '3d' ? 'var(--color-bronze-600)' : 'var(--color-stone-600)',
+                background: mediaTab === '3d' ? 'var(--color-paper-100)' : 'transparent',
+                border: 'none',
+                borderRadius: 'var(--radius-sm)',
+                cursor: 'pointer'
+              }}
+            >
+              <Box size={14} />
+              {t('view_3d_twin', 'Interactive 3D Digital Twin')}
+            </button>
+          </div>
+
+          {/* Master Media Display OR 3D Digital Twin Viewer */}
+          {mediaTab === '3d' ? (
+            <div style={{ marginBottom: '2rem' }}>
+              <DigitalTwin3DViewer monumentTitle={item.title} />
+            </div>
+          ) : primaryMedia ? (
             <div className="card" style={{ overflow: 'hidden', marginBottom: '2rem' }}>
               <div style={{
                 maxHeight: '480px',
@@ -418,7 +536,7 @@ export default function ArchiveDetailPage() {
             alignItems: 'center',
             gap: '0.5rem'
           }}>
-            Related Heritage Records
+            {t('related_records', 'Related Heritage Records')}
           </h3>
           <p style={{ fontSize: '0.88rem', color: 'var(--color-stone-600)', marginBottom: '1.5rem' }}>
             Recommended archives sharing regional water hydrology, Solanki stone carving styles, or thematic tags.
@@ -489,4 +607,3 @@ export default function ArchiveDetailPage() {
     </div>
   );
 }
-

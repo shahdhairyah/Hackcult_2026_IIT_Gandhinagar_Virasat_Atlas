@@ -56,3 +56,4 @@ class OcrRepository {
         return $stmt->execute([$reviewedText, $reviewerId, $id]);
     }
 }
+

@@ -1,10 +1,23 @@
 import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../app/AuthContext';
-import { Compass, Map, Layers, PlusCircle, CheckSquare, LogOut, User, FolderArchive } from 'lucide-react';
+import { useTranslation } from '../utils/i18n';
+import { 
+  Compass, 
+  Map, 
+  Layers, 
+  PlusCircle, 
+  CheckSquare, 
+  LogOut, 
+  User, 
+  FolderArchive,
+  Shield,
+  Globe
+} from 'lucide-react';
 
 export default function SiteHeader() {
   const { user, isAuthenticated, logout, hasRole } = useAuth();
+  const { language, setLanguage, t, languages } = useTranslation();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -26,7 +39,9 @@ export default function SiteHeader() {
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingTop: '0.85rem',
-        paddingBottom: '0.85rem'
+        paddingBottom: '0.85rem',
+        flexWrap: 'wrap',
+        gap: '0.75rem'
       }}>
         {/* Brand */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
@@ -53,7 +68,7 @@ export default function SiteHeader() {
               letterSpacing: '0.04em',
               color: 'var(--color-paper-50)'
             }}>
-              VIRASAT ATLAS
+              {t('brand_title', 'VIRASAT ATLAS')}
             </div>
             <div style={{
               fontSize: '0.72rem',
@@ -61,13 +76,13 @@ export default function SiteHeader() {
               letterSpacing: '0.05em',
               textTransform: 'uppercase'
             }}>
-              Digital Cultural Archive
+              {t('brand_subtitle', 'Digital Cultural Archive')}
             </div>
           </div>
         </Link>
 
         {/* Navigation */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
           <NavLink 
             to="/" 
             end
@@ -75,15 +90,15 @@ export default function SiteHeader() {
               display: 'flex',
               alignItems: 'center',
               gap: '0.4rem',
-              fontSize: '0.9rem',
+              fontSize: '0.88rem',
               fontWeight: 500,
               color: isActive ? 'var(--color-sand-300)' : 'var(--color-paper-100)',
               borderBottom: isActive ? '2px solid var(--color-sand-300)' : '2px solid transparent',
               paddingBottom: '0.2rem'
             })}
           >
-            <Compass size={16} />
-            Explore
+            <Compass size={15} />
+            {t('nav_explore', 'Explore')}
           </NavLink>
 
           <NavLink 
@@ -92,15 +107,15 @@ export default function SiteHeader() {
               display: 'flex',
               alignItems: 'center',
               gap: '0.4rem',
-              fontSize: '0.9rem',
+              fontSize: '0.88rem',
               fontWeight: 500,
               color: isActive ? 'var(--color-sand-300)' : 'var(--color-paper-100)',
               borderBottom: isActive ? '2px solid var(--color-sand-300)' : '2px solid transparent',
               paddingBottom: '0.2rem'
             })}
           >
-            <Map size={16} />
-            Map
+            <Map size={15} />
+            {t('nav_map', 'Map')}
           </NavLink>
 
           <NavLink 
@@ -109,15 +124,15 @@ export default function SiteHeader() {
               display: 'flex',
               alignItems: 'center',
               gap: '0.4rem',
-              fontSize: '0.9rem',
+              fontSize: '0.88rem',
               fontWeight: 500,
               color: isActive ? 'var(--color-sand-300)' : 'var(--color-paper-100)',
               borderBottom: isActive ? '2px solid var(--color-sand-300)' : '2px solid transparent',
               paddingBottom: '0.2rem'
             })}
           >
-            <Layers size={16} />
-            Collections
+            <Layers size={15} />
+            {t('nav_collections', 'Collections')}
           </NavLink>
 
           <NavLink 
@@ -126,15 +141,15 @@ export default function SiteHeader() {
               display: 'flex',
               alignItems: 'center',
               gap: '0.4rem',
-              fontSize: '0.9rem',
+              fontSize: '0.88rem',
               fontWeight: 500,
               color: isActive ? 'var(--color-sand-300)' : 'var(--color-paper-100)',
               borderBottom: isActive ? '2px solid var(--color-sand-300)' : '2px solid transparent',
               paddingBottom: '0.2rem'
             })}
           >
-            <Compass size={16} />
-            Pitch Deck
+            <Compass size={15} />
+            {t('nav_pitch', 'Pitch Deck')}
           </NavLink>
 
           {/* Researcher Workspace */}
@@ -145,15 +160,15 @@ export default function SiteHeader() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.4rem',
-                fontSize: '0.9rem',
+                fontSize: '0.88rem',
                 fontWeight: 500,
                 color: isActive ? 'var(--color-sand-300)' : 'var(--color-paper-100)',
                 borderBottom: isActive ? '2px solid var(--color-sand-300)' : '2px solid transparent',
                 paddingBottom: '0.2rem'
               })}
             >
-              <FolderArchive size={16} />
-              My Workspace
+              <FolderArchive size={15} />
+              {t('nav_workspace', 'My Workspace')}
             </NavLink>
           )}
 
@@ -165,46 +180,85 @@ export default function SiteHeader() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.4rem',
-                fontSize: '0.9rem',
+                fontSize: '0.88rem',
                 fontWeight: 500,
                 color: isActive ? 'var(--color-sand-300)' : 'var(--color-paper-100)',
                 borderBottom: isActive ? '2px solid var(--color-sand-300)' : '2px solid transparent',
                 paddingBottom: '0.2rem'
               })}
             >
-              <CheckSquare size={16} />
-              Review Queue
+              <CheckSquare size={15} />
+              {t('nav_review', 'Review Queue')}
+            </NavLink>
+          )}
+
+          {/* Admin Governance */}
+          {(hasRole('admin') || hasRole('reviewer')) && (
+            <NavLink 
+              to="/admin" 
+              style={({ isActive }) => ({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                fontSize: '0.88rem',
+                fontWeight: 500,
+                color: isActive ? 'var(--color-sand-300)' : 'var(--color-paper-100)',
+                borderBottom: isActive ? '2px solid var(--color-sand-300)' : '2px solid transparent',
+                paddingBottom: '0.2rem'
+              })}
+            >
+              <Shield size={15} />
+              {t('nav_admin', 'Admin')}
             </NavLink>
           )}
         </nav>
 
-        {/* Auth / Action */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+        {/* Right Actions: Language Switcher & Auth */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* Multilingual Selector (FR-17) */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            borderRadius: 'var(--radius-sm)',
+            padding: '2px 4px',
+            border: '1px solid rgba(255, 255, 255, 0.15)'
+          }}>
+            <Globe size={13} color="var(--color-sand-300)" style={{ marginLeft: '4px', marginRight: '4px' }} />
+            {languages.map(l => (
+              <button
+                key={l.code}
+                onClick={() => setLanguage(l.code)}
+                style={{
+                  background: language === l.code ? 'var(--color-bronze-600)' : 'transparent',
+                  color: language === l.code ? '#fff' : 'var(--color-sand-300)',
+                  border: 'none',
+                  borderRadius: '3px',
+                  padding: '2px 6px',
+                  fontSize: '0.72rem',
+                  fontWeight: language === l.code ? 700 : 500,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+                title={l.label}
+              >
+                {l.code.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
           {hasRole('researcher') && (
             <Link to="/contribute" className="btn btn-primary btn-sm">
-              <PlusCircle size={15} />
-              Contribute
+              <PlusCircle size={14} />
+              <span>Contribute</span>
             </Link>
           )}
 
           {isAuthenticated ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <div style={{
-                textAlign: 'right',
-                display: 'none',
-                lineHeight: 1.2
-              }} className="user-info-text">
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-paper-50)' }}>
-                  {user.full_name}
-                </div>
-                <div style={{ fontSize: '0.7rem', color: 'var(--color-sand-300)', textTransform: 'capitalize' }}>
-                  {user.role}
-                </div>
-              </div>
-
-              <div style={{
-                width: '32px',
-                height: '32px',
+                width: '30px',
+                height: '30px',
                 borderRadius: '50%',
                 backgroundColor: 'var(--color-ink-800)',
                 border: '1px solid var(--color-sand-300)',
@@ -212,7 +266,7 @@ export default function SiteHeader() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: 'var(--color-sand-300)',
-                fontSize: '0.85rem',
+                fontSize: '0.8rem',
                 fontWeight: 600
               }} title={`${user.full_name} (${user.role})`}>
                 {user.full_name.charAt(0)}
@@ -221,17 +275,17 @@ export default function SiteHeader() {
               <button 
                 onClick={handleLogout} 
                 className="btn btn-outline btn-sm"
-                style={{ color: 'var(--color-sand-300)', borderColor: 'rgba(217, 196, 162, 0.4)' }}
+                style={{ color: 'var(--color-sand-300)', borderColor: 'rgba(217, 196, 162, 0.4)', padding: '0.3rem 0.6rem' }}
                 title="Sign out"
               >
-                <LogOut size={15} />
-                <span style={{ fontSize: '0.8rem' }}>Sign out</span>
+                <LogOut size={14} />
+                <span style={{ fontSize: '0.78rem' }}>{t('nav_signout', 'Sign out')}</span>
               </button>
             </div>
           ) : (
             <Link to="/login" className="btn btn-secondary btn-sm">
-              <User size={15} />
-              Sign in
+              <User size={14} />
+              {t('nav_signin', 'Sign in')}
             </Link>
           )}
         </div>
@@ -239,4 +293,3 @@ export default function SiteHeader() {
     </header>
   );
 }
-

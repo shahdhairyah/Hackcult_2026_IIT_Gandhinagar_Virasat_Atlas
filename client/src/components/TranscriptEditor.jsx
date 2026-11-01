@@ -274,3 +274,4 @@ export default function TranscriptEditor({ itemId, canEdit = false }) {
     </div>
   );
 }
+

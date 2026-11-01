@@ -82,3 +82,4 @@ class OcrController {
         JsonResponse::success($updated);
     }
 }
+

@@ -2,28 +2,47 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../api/client';
 import { useAuth } from '../../app/AuthContext';
+import { useTranslation } from '../../utils/i18n';
 import StatusBadge from '../../components/StatusBadge';
 import EmptyState from '../../components/EmptyState';
 import ErrorState from '../../components/ErrorState';
-import { PlusCircle, Edit3, Eye, Send, Clock, CheckCircle2, AlertTriangle, FileText } from 'lucide-react';
+import { 
+  PlusCircle, 
+  Edit3, 
+  Eye, 
+  Send, 
+  Clock, 
+  CheckCircle2, 
+  AlertTriangle, 
+  FileText, 
+  Bookmark, 
+  Trash2, 
+  ExternalLink 
+} from 'lucide-react';
 
 export default function WorkspacePage() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [items, setItems] = useState([]);
+  const [savedItems, setSavedItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
 
   useEffect(() => {
-    loadMyItems();
+    loadData();
   }, []);
 
-  async function loadMyItems() {
+  async function loadData() {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.get('/workspace/items');
-      setItems(res.data || []);
+      const [itemsRes, savedRes] = await Promise.all([
+        api.get('/workspace/items'),
+        api.get('/saved-items').catch(() => ({ data: [] }))
+      ]);
+      setItems(itemsRes.data || []);
+      setSavedItems(savedRes.data || []);
     } catch (err) {
       setError(err.message || 'Failed to load researcher workspace.');
     } finally {
@@ -37,21 +56,31 @@ export default function WorkspacePage() {
         ...item,
         status: 'pending_review'
       });
-      await loadMyItems();
+      await loadData();
     } catch (err) {
       alert(err.message || 'Failed to submit item for review.');
     }
   };
 
-  const filteredItems = items.filter(it => {
-    if (filterStatus === 'all') return true;
-    return it.status === filterStatus;
-  });
+  const handleRemoveBookmark = async (archiveItemId) => {
+    if (!window.confirm('Remove this record from your saved bookmarks?')) return;
+    try {
+      await api.delete(`/saved-items/${archiveItemId}`);
+      setSavedItems(prev => prev.filter(s => s.archive_item_id !== archiveItemId));
+    } catch (err) {
+      alert(err.message || 'Failed to remove bookmark.');
+    }
+  };
 
   const draftCount = items.filter(i => i.status === 'draft').length;
   const pendingCount = items.filter(i => i.status === 'pending_review').length;
   const publishedCount = items.filter(i => i.status === 'published').length;
   const rejectedCount = items.filter(i => i.status === 'rejected').length;
+
+  const filteredItems = items.filter(it => {
+    if (filterStatus === 'all') return true;
+    return it.status === filterStatus;
+  });
 
   return (
     <div className="container" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
@@ -66,7 +95,7 @@ export default function WorkspacePage() {
       }}>
         <div>
           <h1 style={{ fontSize: '1.85rem', color: 'var(--color-ink-950)' }}>
-            Researcher Workspace
+            {t('nav_workspace', 'Researcher Workspace')}
           </h1>
           <p style={{ color: 'var(--color-stone-600)', fontSize: '0.9rem' }}>
             Logged in as <strong>{user?.full_name}</strong> ({user?.organization || 'Heritage Researcher'})
@@ -86,7 +115,11 @@ export default function WorkspacePage() {
         gap: '1rem',
         marginBottom: '2rem'
       }}>
-        <div className="card" style={{ padding: '1.25rem', borderLeft: '4px solid var(--color-stone-600)' }}>
+        <div 
+          className="card" 
+          onClick={() => setFilterStatus('draft')}
+          style={{ padding: '1.25rem', borderLeft: '4px solid var(--color-stone-600)', cursor: 'pointer' }}
+        >
           <div style={{ fontSize: '0.8rem', color: 'var(--color-stone-600)', textTransform: 'uppercase', fontWeight: 600 }}>
             Drafts in Progress
           </div>
@@ -95,7 +128,11 @@ export default function WorkspacePage() {
           </div>
         </div>
 
-        <div className="card" style={{ padding: '1.25rem', borderLeft: '4px solid var(--color-amber-700)' }}>
+        <div 
+          className="card" 
+          onClick={() => setFilterStatus('pending_review')}
+          style={{ padding: '1.25rem', borderLeft: '4px solid var(--color-amber-700)', cursor: 'pointer' }}
+        >
           <div style={{ fontSize: '0.8rem', color: 'var(--color-amber-700)', textTransform: 'uppercase', fontWeight: 600 }}>
             Under Review
           </div>
@@ -104,7 +141,11 @@ export default function WorkspacePage() {
           </div>
         </div>
 
-        <div className="card" style={{ padding: '1.25rem', borderLeft: '4px solid var(--color-green-700)' }}>
+        <div 
+          className="card" 
+          onClick={() => setFilterStatus('published')}
+          style={{ padding: '1.25rem', borderLeft: '4px solid var(--color-green-700)', cursor: 'pointer' }}
+        >
           <div style={{ fontSize: '0.8rem', color: 'var(--color-green-700)', textTransform: 'uppercase', fontWeight: 600 }}>
             Published Records
           </div>
@@ -113,8 +154,25 @@ export default function WorkspacePage() {
           </div>
         </div>
 
+        <div 
+          className="card" 
+          onClick={() => setFilterStatus('saved')}
+          style={{ padding: '1.25rem', borderLeft: '4px solid var(--color-blue-700)', cursor: 'pointer' }}
+        >
+          <div style={{ fontSize: '0.8rem', color: 'var(--color-blue-700)', textTransform: 'uppercase', fontWeight: 600 }}>
+            Bookmarked Records
+          </div>
+          <div style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--color-ink-950)', marginTop: '0.25rem' }}>
+            {savedItems.length}
+          </div>
+        </div>
+
         {rejectedCount > 0 && (
-          <div className="card" style={{ padding: '1.25rem', borderLeft: '4px solid var(--color-red-700)' }}>
+          <div 
+            className="card" 
+            onClick={() => setFilterStatus('rejected')}
+            style={{ padding: '1.25rem', borderLeft: '4px solid var(--color-red-700)', cursor: 'pointer' }}
+          >
             <div style={{ fontSize: '0.8rem', color: 'var(--color-red-700)', textTransform: 'uppercase', fontWeight: 600 }}>
               Needs Correction
             </div>
@@ -133,21 +191,28 @@ export default function WorkspacePage() {
         marginBottom: '1.5rem',
         overflowX: 'auto'
       }}>
-        {['all', 'draft', 'pending_review', 'published', 'rejected'].map(st => (
+        {[
+          { key: 'all', label: 'All Records' },
+          { key: 'draft', label: 'Drafts' },
+          { key: 'pending_review', label: 'Under Review' },
+          { key: 'published', label: 'Published' },
+          { key: 'rejected', label: 'Needs Correction' },
+          { key: 'saved', label: `⭐ Saved Bookmarks (${savedItems.length})` }
+        ].map(tab => (
           <button
-            key={st}
-            onClick={() => setFilterStatus(st)}
+            key={tab.key}
+            onClick={() => setFilterStatus(tab.key)}
             style={{
               padding: '0.65rem 1.15rem',
               fontSize: '0.88rem',
-              fontWeight: filterStatus === st ? 600 : 400,
-              color: filterStatus === st ? 'var(--color-bronze-600)' : 'var(--color-stone-600)',
-              borderBottom: filterStatus === st ? '2px solid var(--color-bronze-600)' : '2px solid transparent',
+              fontWeight: filterStatus === tab.key ? 600 : 400,
+              color: filterStatus === tab.key ? 'var(--color-bronze-600)' : 'var(--color-stone-600)',
+              borderBottom: filterStatus === tab.key ? '2px solid var(--color-bronze-600)' : '2px solid transparent',
               textTransform: 'capitalize',
               whiteSpace: 'nowrap'
             }}
           >
-            {st === 'all' ? 'All Records' : st.replace('_', ' ')}
+            {tab.label}
           </button>
         ))}
       </div>
@@ -155,10 +220,88 @@ export default function WorkspacePage() {
       {/* Content State */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-stone-600)' }}>
-          Loading your contributions...
+          Loading your contributions and bookmarks...
         </div>
       ) : error ? (
-        <ErrorState message={error} onRetry={loadMyItems} />
+        <ErrorState message={error} onRetry={loadData} />
+      ) : filterStatus === 'saved' ? (
+        /* Render Saved Bookmarks (FR-16) */
+        savedItems.length === 0 ? (
+          <EmptyState
+            title="No Saved Heritage Bookmarks"
+            message="You can bookmark archival records from any detail page to keep track of citations, architectural references, and field studies."
+            actionLabel="Explore Public Archive"
+            onAction={() => window.location.href = '/'}
+          />
+        ) : (
+          <div style={{ display: 'grid', gap: '1.25rem' }}>
+            {savedItems.map(b => (
+              <div key={b.id} className="card" style={{ padding: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+                  <div style={{ display: 'flex', gap: '1.25rem', flex: 1, minWidth: '280px' }}>
+                    {b.primary_media_key ? (
+                      <div style={{
+                        width: '100px',
+                        height: '80px',
+                        borderRadius: 'var(--radius-sm)',
+                        overflow: 'hidden',
+                        flexShrink: 0,
+                        backgroundColor: 'var(--color-paper-100)'
+                      }}>
+                        <img 
+                          src={`/api/v1/media/${b.primary_media_id}/view`} 
+                          alt={b.title}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      </div>
+                    ) : null}
+
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
+                        <span className="badge badge-type">{b.item_type || 'heritage'}</span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--color-stone-600)' }}>
+                          {b.region} • Saved on {new Date(b.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+
+                      <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem', color: 'var(--color-ink-950)' }}>
+                        <Link to={`/archive/${b.archive_item_id}`}>
+                          {b.title}
+                        </Link>
+                      </h3>
+
+                      {b.notes && (
+                        <p style={{ fontSize: '0.85rem', color: 'var(--color-bronze-700)', fontStyle: 'italic', marginBottom: '0.5rem' }}>
+                          Personal Note: "{b.notes}"
+                        </p>
+                      )}
+
+                      <p style={{ fontSize: '0.85rem', color: 'var(--color-stone-600)', margin: 0 }}>
+                        {b.summary?.slice(0, 140)}...
+                      </p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Link to={`/archive/${b.archive_item_id}`} className="btn btn-outline btn-sm">
+                      <Eye size={14} />
+                      View
+                    </Link>
+                    <button
+                      onClick={() => handleRemoveBookmark(b.archive_item_id)}
+                      className="btn btn-sm"
+                      style={{ color: 'var(--color-red-700)', borderColor: '#FFCDD2', background: '#FFF5F5' }}
+                      title="Remove bookmark"
+                    >
+                      <Trash2 size={14} />
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
       ) : filteredItems.length === 0 ? (
         <EmptyState
           title="No contributions in this view"
@@ -181,7 +324,7 @@ export default function WorkspacePage() {
                   </div>
 
                   <h3 style={{ fontSize: '1.2rem', marginBottom: '0.4rem', color: 'var(--color-ink-950)' }}>
-                    <Link to={`/archive/${item.id}`} style={{ hover: { color: 'var(--color-bronze-600)' } }}>
+                    <Link to={`/archive/${item.id}`}>
                       {item.title}
                     </Link>
                   </h3>
@@ -263,4 +406,3 @@ export default function WorkspacePage() {
     </div>
   );
 }
-

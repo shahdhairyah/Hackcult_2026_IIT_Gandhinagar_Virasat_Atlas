@@ -34,6 +34,8 @@ use Virasat\Controllers\ReviewController;
 use Virasat\Controllers\LocationController;
 use Virasat\Controllers\CollectionController;
 use Virasat\Controllers\OcrController;
+use Virasat\Controllers\SavedItemController;
+use Virasat\Controllers\AdminController;
 
 // 1. Load environment variables
 Env::load(__DIR__ . '/.env');
@@ -160,6 +162,39 @@ if (preg_match('#^' . $prefix . '/collections/(\d+)$#', $uri, $m) && ($requestMe
 }
 if (preg_match('#^' . $prefix . '/collections/(\d+)/items$#', $uri, $m) && ($requestMethod === 'PATCH' || $requestMethod === 'PUT' || $requestMethod === 'POST')) {
     CollectionController::setItems((int)$m[1]);
+}
+
+// Saved Items / Bookmarks endpoints
+if ($uri === $prefix . '/saved-items' && ($requestMethod === 'GET' || $requestMethod === 'HEAD')) {
+    SavedItemController::index();
+}
+if (preg_match('#^' . $prefix . '/saved-items/(\d+)$#', $uri, $m)) {
+    if ($requestMethod === 'POST') {
+        SavedItemController::toggle((int)$m[1]);
+    }
+    if ($requestMethod === 'DELETE') {
+        SavedItemController::remove((int)$m[1]);
+    }
+}
+if (preg_match('#^' . $prefix . '/saved-items/(\d+)/status$#', $uri, $m) && ($requestMethod === 'GET' || $requestMethod === 'HEAD')) {
+    SavedItemController::status((int)$m[1]);
+}
+
+// Admin & Governance endpoints
+if ($uri === $prefix . '/admin/metrics' && ($requestMethod === 'GET' || $requestMethod === 'HEAD')) {
+    AdminController::metrics();
+}
+if ($uri === $prefix . '/admin/users' && ($requestMethod === 'GET' || $requestMethod === 'HEAD')) {
+    AdminController::users();
+}
+if (preg_match('#^' . $prefix . '/admin/users/(\d+)/role$#', $uri, $m) && ($requestMethod === 'PATCH' || $requestMethod === 'POST')) {
+    AdminController::updateUserRole((int)$m[1]);
+}
+if ($uri === $prefix . '/admin/audit-logs' && ($requestMethod === 'GET' || $requestMethod === 'HEAD')) {
+    AdminController::auditLogs();
+}
+if ($uri === $prefix . '/archive-export' && ($requestMethod === 'GET' || $requestMethod === 'HEAD')) {
+    AdminController::exportArchive();
 }
 
 // Root fallback / documentation status
