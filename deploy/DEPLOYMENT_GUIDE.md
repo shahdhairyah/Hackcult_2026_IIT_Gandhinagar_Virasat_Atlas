@@ -99,3 +99,4 @@ This means Apache is NOT routing `/api/*` calls to PHP. Check:
 
 ### PHP version
 InfinityFree runs PHP 8.x. This app requires PHP 7.4+. ✅
+

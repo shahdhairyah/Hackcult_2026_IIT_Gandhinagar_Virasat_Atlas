@@ -70,3 +70,4 @@ td:first-child{color:#aaa;width:240px}.ok{color:#4f4}
 </table>
 <p style="margin-top:2em;color:#888">⚠ Delete test-db.php after verification</p>
 </body></html>
+

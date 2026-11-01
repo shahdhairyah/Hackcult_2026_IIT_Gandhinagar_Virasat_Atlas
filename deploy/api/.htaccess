@@ -10,3 +10,4 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 # Route everything to index.php, keeping query string
 RewriteRule ^(.*)$ index.php [QSA,L]
+
