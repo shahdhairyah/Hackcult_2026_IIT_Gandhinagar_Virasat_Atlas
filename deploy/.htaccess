@@ -1,9 +1,12 @@
-# Virasat Atlas - Root Apache Configuration for InfinityFree / cPanel (htdocs)
+# Virasat Atlas - Root Apache Configuration
+# Compatible with InfinityFree / cPanel Apache 2.4
+# DO NOT use Options directive — InfinityFree blocks it
+
 RewriteEngine On
 RewriteBase /
 
-# 1. Protect sensitive configuration files
-<FilesMatch "^\.env|.*\.sql$">
+# 1. Protect sensitive files (.env, .sql)
+<FilesMatch "(^\.env|\.sql$)">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>
@@ -13,22 +16,25 @@ RewriteBase /
     </IfModule>
 </FilesMatch>
 
-# 2. Prevent rewrite loop for api entry point
+# 2. Prevent rewrite loop for the API entry point itself
 RewriteRule ^api/index\.php$ - [L]
 
-# 3. Route any /api/* or /api/v1/* requests directly to api/index.php
-RewriteCond %{REQUEST_URI} ^/api(/.*)?$ [NC]
-RewriteRule ^api(/.*)?$ api/index.php [QSA,L]
+# 3. Route all /api/* requests to api/index.php
+#    Pass the path as PATH_INFO via [QSA,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(api/.*)$ api/index.php [QSA,L]
 
-# 4. Serve existing files or directories directly (CSS, JS, images, installer, test scripts)
+# 4. Serve real static files or directories directly
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# 5. SPA Client Routing: Send all remaining route paths to React index.html
+# 5. SPA fallback — send all remaining routes to React index.html
 RewriteRule ^ index.html [L]
 
-# 6. Proper MIME Types
+# 6. MIME types
 AddType image/svg+xml .svg .svgz
 AddType application/javascript .js
 AddType text/css .css
+AddType application/json .json

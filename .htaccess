@@ -32,3 +32,4 @@ RewriteRule ^ index.html [L]
 AddType image/svg+xml .svg .svgz
 AddType application/javascript .js
 AddType text/css .css
+

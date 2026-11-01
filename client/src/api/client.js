@@ -57,6 +57,21 @@ class ApiClient {
 
     try {
       const response = await fetch(url, config);
+
+      // Check content-type — InfinityFree may return HTML error pages instead of JSON
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        // Server returned an HTML page (Apache 404/500/403) — not JSON
+        const text = await response.text().catch(() => '');
+        const httpErr = new Error(
+          `Server configuration error (HTTP ${response.status}). The API may not be routing correctly on the host. ` +
+          (text.slice(0, 200) || '')
+        );
+        httpErr.code = 'SERVER_CONFIG_ERROR';
+        httpErr.status = response.status;
+        throw httpErr;
+      }
+
       const data = await response.json();
 
       if (!response.ok || data.error) {
@@ -69,7 +84,7 @@ class ApiClient {
 
       return data;
     } catch (err) {
-      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+      if (err.name === 'TypeError' && (err.message.includes('fetch') || err.message.includes('Failed to fetch') || err.message.includes('NetworkError'))) {
         const netErr = new Error('Network error: Unable to connect to the Virasat Atlas API.');
         netErr.code = 'NETWORK_ERROR';
         throw netErr;

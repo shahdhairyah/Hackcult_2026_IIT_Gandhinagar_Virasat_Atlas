@@ -1,83 +1,101 @@
-# Virasat Atlas — InfinityFree Deployment Guide
+# Virasat Atlas — Deployment Guide (InfinityFree)
 
-This guide explains how to deploy the **Virasat Atlas** application to your InfinityFree hosting at **`http://hackcult26.gt.tc`**.
-
----
-
-## 1. Hosting & Database Information
-
-| Parameter | Value |
+## Hosting Details
+| Key | Value |
 |---|---|
-| **Website URL** | **`http://hackcult26.gt.tc`** |
-| **MySQL Hostname** | **`sql308.infinityfree.com`** |
-| **MySQL Database** | **`if0_43194312_hackcult26`** |
-| **MySQL Username** | **`if0_43194312`** |
-| **MySQL Password** | `WWeqIqyQcPCcYy` |
-| **Hosting Web Root** | `/htdocs` (or `/hackcult26.gt.tc/htdocs`) |
+| URL | http://hackcult26.gt.tc |
+| Web Root | htdocs/ |
+| MySQL Host | sql308.infinityfree.com |
+| Database | if0_43194312_hackcult26 |
+| Username | if0_43194312 |
 
 ---
 
-## 2. Key Architecture Fixes Included in this Build
+## Step 1 – Upload Files
 
-1. **Zero-Crash Resilient Architecture**:
-   - Built-in graceful offline fallback mode: If the remote MySQL connection is not yet configured, is delayed, or during maintenance, the website **never crashes with a 500 error**. It seamlessly serves the authentic Gujarat heritage dataset and allows logging in.
-   - When the MySQL database is imported or reachable, the application automatically switches to live MySQL mode with full database reads, writes, contributions, and reviews.
-2. **Correct Database Configuration**:
-   - Fully configured for `if0_43194312_hackcult26` on `sql308.infinityfree.com`.
-3. **Apache 2.4 & InfinityFree Friendly Routing**:
-   - Modern `.htaccess` rules prevent infinite rewrite loops and handle client-side SPA routing (`index.html`) alongside API routing (`api/index.php`).
-4. **Diagnostic & Setup Tools**:
-   - `test-db.php`: Visual real-time verification of database connectivity and table counts.
-   - `install.php`: 1-click automatic schema creator and data seeder.
-   - `if0_43194312_hackcult26.sql`: Standalone MariaDB/MySQL dump ready for phpMyAdmin import.
+Upload **all contents** of this `deploy/` folder directly into your **`htdocs/`** folder using the InfinityFree File Manager or FTP.
 
----
+Your `htdocs/` should look like this after upload:
+```
+htdocs/
+├── .htaccess           ← root routing (SPA + API)
+├── index.html          ← React app
+├── assets/             ← JS + CSS bundles
+├── api/
+│   ├── .htaccess       ← API sub-routing (CRITICAL)
+│   ├── .env            ← DB credentials
+│   ├── index.php       ← PHP API entry point
+│   ├── router.php
+│   ├── src/            ← PHP source
+│   └── storage/
+│       └── uploads/
+│           └── .htaccess
+├── install.php
+├── test-db.php
+└── if0_43194312_hackcult26.sql
+```
 
-## 3. How to Deploy (Step-by-Step)
-
-### Option A: 1-Click Upload via cPanel File Manager (Recommended)
-1. In your local project root, locate **`deploy.zip`** (220 KB).
-2. Log into the [InfinityFree Control Panel](https://cpanel.epizy.com/).
-3. Open the **Online File Manager**.
-4. Navigate into your website's **`htdocs`** folder (if you see multiple domain folders, navigate to `hackcult26.gt.tc/htdocs/`).
-5. Delete any old files or previous test files in that folder.
-6. Click **Upload** and upload **`deploy.zip`**.
-7. Right-click **`deploy.zip`** in the file list and choose **Extract**.
-8. Confirm that the extracted files are directly in `htdocs/`:
-   - `index.html`
-   - `.htaccess`
-   - `assets/`
-   - `api/`
-   - `install.php`
-   - `test-db.php`
-   - `if0_43194312_hackcult26.sql`
+> **IMPORTANT**: Make sure hidden files (`.htaccess`, `.env`) are uploaded — they are invisible by default in most FTP clients. In FileZilla: Server → Force showing hidden files.
 
 ---
 
-## 4. Verifying & Initializing Your Database
+## Step 2 – Import the Database
 
-1. Open your browser and visit:
-   ```text
-   http://hackcult26.gt.tc/test-db.php
-   ```
-   - If connected and tables exist: You will see a green **"Connected to MySQL successfully!"** badge with the table list.
-   - If the database is empty: Click the **"Run 1-Click Installer"** button (or visit `http://hackcult26.gt.tc/install.php`) to create and seed all 11 tables in 1 click.
-   - *Alternative*: You can also import `if0_43194312_hackcult26.sql` directly into phpMyAdmin inside your InfinityFree cPanel.
-
-2. Verify API Health:
-   ```text
-   http://hackcult26.gt.tc/api/v1/health
-   ```
+1. Visit **http://hackcult26.gt.tc/install.php**
+2. Click **Run Installation**
+3. Verify all ✅ green messages appear
+4. Visit **http://hackcult26.gt.tc/test-db.php** to confirm DB + extensions
 
 ---
 
-## 5. Demo Login Credentials
+## Step 3 – Test the API
 
-The following pre-configured credentials are ready for testing on `http://hackcult26.gt.tc/login`:
+Open in browser or Postman:
+- `http://hackcult26.gt.tc/api/v1/health` → should return `{"data":{"status":"ready",...}}`
+- `http://hackcult26.gt.tc/api/v1/archive-items` → returns archive items
 
-| Role | Email | Password | Access Capabilities |
-|---|---|---|---|
-| **Researcher** | `researcher@virasat.org` | `password123` | Workspace, contribution forms, media uploads |
-| **Reviewer** | `reviewer@virasat.org` | `password123` | Editorial review queue, approve/reject items, OCR editor |
-| **Administrator** | `admin@virasat.org` | `password123` | Governance dashboard, user management, audit logs, OAIS export |
-| **Visitor** | `visitor@virasat.org` | `password123` | Public catalogue discovery, 3D monument viewer, research bookmarks |
+If you see JSON — it's working. If you see HTML — the `.htaccess` routing isn't being applied (see troubleshooting below).
+
+---
+
+## Step 4 – Cleanup (Security)
+
+After successful deployment, **delete these files** from htdocs:
+- `install.php`
+- `test-db.php`
+- `if0_43194312_hackcult26.sql`
+
+---
+
+## Default Login Credentials
+
+If the database import fails or the DB is unreachable, the app has **offline fallback mode** with these built-in accounts:
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@virasat.org | password123 |
+| Curator | curator@virasat.org | password123 |
+| Public | user@virasat.org | password123 |
+
+---
+
+## Troubleshooting
+
+### "Network error: Unable to connect to the Virasat Atlas API"
+This means Apache is NOT routing `/api/*` calls to PHP. Check:
+1. Both `.htaccess` files uploaded (root AND `api/.htaccess`)
+2. InfinityFree File Manager → check `.htaccess` visible with "Show Hidden Files"
+3. Visit `http://hackcult26.gt.tc/api/index.php` directly — if you get JSON it's working
+4. InfinityFree may take 5–10 min for `.htaccess` changes to propagate
+
+### "A server error occurred"
+1. Visit `/test-db.php` — check DB connection result
+2. InfinityFree MySQL sometimes has a 500ms connection delay — the API has 3s timeout built in
+3. Check that `api/.env` has the correct credentials
+
+### Blank page / 500 on index.html
+- InfinityFree may cache aggressively. Clear with Ctrl+Shift+R
+- Make sure `assets/` folder was uploaded with contents
+
+### PHP version
+InfinityFree runs PHP 8.x. This app requires PHP 7.4+. ✅

@@ -1,3 +1,5 @@
+mysqldump: Deprecated program name. It will be removed in a future release, use '/home/shahdhairyah/.local/mariadb/usr/bin/mariadb-dump' instead
+WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.
 /*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.20-13.0.2-MariaDB, for Linux (x86_64)
 --
@@ -534,4 +536,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-11-01 17:11:02
+-- Dump completed on 2026-11-01 18:10:45

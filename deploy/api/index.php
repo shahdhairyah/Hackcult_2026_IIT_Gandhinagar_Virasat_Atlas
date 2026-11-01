@@ -73,7 +73,10 @@ register_shutdown_function(function () {
 
 // 4. Request parsing
 $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-$rawUri = $_SERVER['REQUEST_URI'] ?? $_SERVER['REDIRECT_URL'] ?? '/';
+
+// InfinityFree/cPanel may deliver path via PATH_INFO when api/.htaccess rewrites to index.php
+// Fall back to REQUEST_URI or REDIRECT_URL
+$rawUri = $_SERVER['PATH_INFO'] ?? $_SERVER['REQUEST_URI'] ?? $_SERVER['REDIRECT_URL'] ?? '/';
 $requestUri = parse_url($rawUri, PHP_URL_PATH) ?? '/';
 
 // Normalize route (strip script name and trailing slash)

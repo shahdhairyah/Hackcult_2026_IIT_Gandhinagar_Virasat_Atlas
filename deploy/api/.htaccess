@@ -1,0 +1,12 @@
+# Virasat Atlas API - Apache routing for /api/ subdirectory
+# This ensures InfinityFree routes all /api/* calls through index.php
+
+RewriteEngine On
+RewriteBase /api/
+
+# Don't rewrite if the file actually exists (e.g. index.php itself)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Route everything to index.php, keeping query string
+RewriteRule ^(.*)$ index.php [QSA,L]
