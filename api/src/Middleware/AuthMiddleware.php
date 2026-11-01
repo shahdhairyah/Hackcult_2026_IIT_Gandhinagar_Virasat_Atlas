@@ -72,3 +72,4 @@ class AuthMiddleware {
         self::$currentUser = $user;
     }
 }
+

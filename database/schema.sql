@@ -173,3 +173,4 @@ CREATE TABLE `audit_logs` (
   INDEX `idx_audit_entity` (`entity_type`, `entity_id`),
   INDEX `idx_audit_action` (`action`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

@@ -46,3 +46,4 @@ class JsonResponse {
         self::error($message, 'VALIDATION_ERROR', 422, $fields);
     }
 }
+

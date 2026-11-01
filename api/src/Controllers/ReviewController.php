@@ -54,3 +54,4 @@ class ReviewController {
         JsonResponse::success($updated);
     }
 }
+

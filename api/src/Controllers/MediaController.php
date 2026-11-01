@@ -177,3 +177,4 @@ class MediaController {
         JsonResponse::success(['message' => 'Media deleted successfully.']);
     }
 }
+

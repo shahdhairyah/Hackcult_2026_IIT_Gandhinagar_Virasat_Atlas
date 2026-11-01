@@ -47,4 +47,42 @@ class CollectionRepository {
 
         return $collection;
     }
+
+    public static function create(array $data): int {
+        $pdo = Database::getConnection();
+        $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $data['title']));
+        $slug = trim($slug, '-');
+
+        $stmt = $pdo->prepare("INSERT INTO collections (title, slug, summary, description, curator_id, is_published) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([
+            $data['title'],
+            $slug,
+            $data['summary'],
+            $data['description'] ?? null,
+            $data['curator_id'],
+            $data['is_published'] ?? 1
+        ]);
+        return (int)$pdo->lastInsertId();
+    }
+
+    public static function setItems(int $collectionId, array $items): void {
+        $pdo = Database::getConnection();
+        $pdo->beginTransaction();
+        try {
+            $del = $pdo->prepare("DELETE FROM collection_items WHERE collection_id = ?");
+            $del->execute([$collectionId]);
+
+            $ins = $pdo->prepare("INSERT INTO collection_items (collection_id, archive_item_id, item_order, curator_notes) VALUES (?, ?, ?, ?)");
+            foreach ($items as $order => $it) {
+                $itemId = is_array($it) ? ($it['archive_item_id'] ?? $it['id']) : $it;
+                $notes = is_array($it) ? ($it['curator_notes'] ?? null) : null;
+                $ins->execute([$collectionId, $itemId, $order + 1, $notes]);
+            }
+            $pdo->commit();
+        } catch (\Exception $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
 }
+

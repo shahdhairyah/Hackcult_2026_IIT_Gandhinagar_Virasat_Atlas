@@ -38,3 +38,4 @@ class Env {
         return $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key) ?: $default;
     }
 }
+

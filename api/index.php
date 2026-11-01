@@ -33,6 +33,7 @@ use Virasat\Controllers\MediaController;
 use Virasat\Controllers\ReviewController;
 use Virasat\Controllers\LocationController;
 use Virasat\Controllers\CollectionController;
+use Virasat\Controllers\OcrController;
 
 // 1. Load environment variables
 Env::load(__DIR__ . '/.env');
@@ -107,6 +108,21 @@ if (preg_match('#^' . $prefix . '/archive-items/(\d+)$#', $uri, $m)) {
         ArchiveItemController::update((int)$m[1]);
     }
 }
+if (preg_match('#^' . $prefix . '/archive-items/(\d+)/related$#', $uri, $m) && ($requestMethod === 'GET' || $requestMethod === 'HEAD')) {
+    ArchiveItemController::related((int)$m[1]);
+}
+
+// OCR Jobs endpoints
+if (preg_match('#^' . $prefix . '/archive-items/(\d+)/ocr-jobs$#', $uri, $m)) {
+    if ($requestMethod === 'GET' || $requestMethod === 'HEAD') {
+        OcrController::index((int)$m[1]);
+    } elseif ($requestMethod === 'POST') {
+        OcrController::store((int)$m[1]);
+    }
+}
+if (preg_match('#^' . $prefix . '/ocr-jobs/(\d+)$#', $uri, $m) && ($requestMethod === 'PATCH' || $requestMethod === 'PUT' || $requestMethod === 'POST')) {
+    OcrController::update((int)$m[1]);
+}
 
 // Media endpoints
 if (preg_match('#^' . $prefix . '/archive-items/(\d+)/media$#', $uri, $m) && $requestMethod === 'POST') {
@@ -133,11 +149,17 @@ if ($uri === $prefix . '/tags' && $requestMethod === 'GET') {
 }
 
 // Collections endpoints
-if ($uri === $prefix . '/collections' && $requestMethod === 'GET') {
+if ($uri === $prefix . '/collections' && ($requestMethod === 'GET' || $requestMethod === 'HEAD')) {
     CollectionController::index();
 }
-if (preg_match('#^' . $prefix . '/collections/(\d+)$#', $uri, $m) && $requestMethod === 'GET') {
+if ($uri === $prefix . '/collections' && $requestMethod === 'POST') {
+    CollectionController::store();
+}
+if (preg_match('#^' . $prefix . '/collections/(\d+)$#', $uri, $m) && ($requestMethod === 'GET' || $requestMethod === 'HEAD')) {
     CollectionController::show((int)$m[1]);
+}
+if (preg_match('#^' . $prefix . '/collections/(\d+)/items$#', $uri, $m) && ($requestMethod === 'PATCH' || $requestMethod === 'PUT' || $requestMethod === 'POST')) {
+    CollectionController::setItems((int)$m[1]);
 }
 
 // Root fallback / documentation status

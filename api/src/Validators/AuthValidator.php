@@ -16,3 +16,4 @@ class AuthValidator {
         return $errors;
     }
 }
+

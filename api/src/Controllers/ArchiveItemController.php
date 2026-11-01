@@ -105,24 +105,32 @@ class ArchiveItemController {
         }
 
         $input = json_decode(file_get_contents('php://input'), true) ?? $_POST;
-        $isDraft = ($input['status'] ?? $item['status']) === 'draft';
+        // Merge with existing record data for partial updates (PATCH)
+        $merged = array_merge($item, $input);
 
-        $errors = ArchiveItemValidator::validate($input, $isDraft);
+        $isDraft = ($merged['status'] ?? $item['status']) === 'draft';
+
+        $errors = ArchiveItemValidator::validate($merged, $isDraft);
         if (!empty($errors)) {
             JsonResponse::validationError('Validation failed. Please check the fields.', $errors);
         }
 
-        ArchiveItemRepository::update($id, $input);
+        ArchiveItemRepository::update($id, $merged);
 
         // Sync tags if provided
         if (isset($input['tags']) && is_array($input['tags'])) {
             ArchiveItemRepository::syncTags($id, $input['tags']);
         }
 
-        AuditRepository::log($user['id'], 'item_updated', 'archive_item', $id, ['title' => $input['title']]);
+        AuditRepository::log($user['id'], 'item_updated', 'archive_item', $id, ['title' => $merged['title']]);
 
         $updated = ArchiveItemRepository::findById($id);
         JsonResponse::success($updated);
+    }
+
+    public static function related(int $id): void {
+        $related = ArchiveItemRepository::getRelatedItems($id);
+        JsonResponse::success($related);
     }
 
     public static function myWorkspace(): void {
@@ -142,3 +150,4 @@ class ArchiveItemController {
         JsonResponse::success($stmt->fetchAll());
     }
 }
+

@@ -19,3 +19,4 @@ if ($path !== '/' && file_exists($fullPath) && !is_dir($fullPath)) {
 
 // Route all requests to index.php
 require __DIR__ . '/index.php';
+

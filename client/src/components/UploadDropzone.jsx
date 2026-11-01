@@ -195,3 +195,4 @@ export default function UploadDropzone({ onFileSelected, selectedFile, onClear, 
     </div>
   );
 }
+

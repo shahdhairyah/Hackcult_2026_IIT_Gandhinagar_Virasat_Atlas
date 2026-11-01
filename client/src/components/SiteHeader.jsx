@@ -120,6 +120,23 @@ export default function SiteHeader() {
             Collections
           </NavLink>
 
+          <NavLink 
+            to="/pitch" 
+            style={({ isActive }) => ({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              fontSize: '0.9rem',
+              fontWeight: 500,
+              color: isActive ? 'var(--color-sand-300)' : 'var(--color-paper-100)',
+              borderBottom: isActive ? '2px solid var(--color-sand-300)' : '2px solid transparent',
+              paddingBottom: '0.2rem'
+            })}
+          >
+            <Compass size={16} />
+            Pitch Deck
+          </NavLink>
+
           {/* Researcher Workspace */}
           {hasRole('researcher') && (
             <NavLink 
@@ -222,3 +239,4 @@ export default function SiteHeader() {
     </header>
   );
 }
+

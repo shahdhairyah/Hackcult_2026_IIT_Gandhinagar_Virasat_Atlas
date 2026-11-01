@@ -34,3 +34,4 @@ class UserRepository {
         return (int)$pdo->lastInsertId();
     }
 }
+

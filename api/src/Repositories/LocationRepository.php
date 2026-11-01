@@ -32,3 +32,4 @@ class LocationRepository {
         return $stmt->fetchAll();
     }
 }
+

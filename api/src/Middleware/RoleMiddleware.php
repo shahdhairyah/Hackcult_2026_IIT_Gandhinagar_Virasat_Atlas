@@ -32,3 +32,4 @@ class RoleMiddleware {
         return $userWeight >= $requiredWeight;
     }
 }
+

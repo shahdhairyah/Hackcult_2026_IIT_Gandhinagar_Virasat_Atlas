@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../../api/client';
+import { useAuth } from '../../app/AuthContext';
 import StatusBadge from '../../components/StatusBadge';
+import TranscriptEditor from '../../components/TranscriptEditor';
 import ErrorState from '../../components/ErrorState';
 import { 
   ArrowLeft, 
@@ -20,13 +22,25 @@ import {
 
 export default function ArchiveDetailPage() {
   const { id } = useParams();
+  const { user, hasRole } = useAuth();
   const [item, setItem] = useState(null);
+  const [relatedItems, setRelatedItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchItem();
+    fetchRelated();
   }, [id]);
+
+  async function fetchRelated() {
+    try {
+      const res = await api.get(`/archive-items/${id}/related`);
+      setRelatedItems(res.data || []);
+    } catch (err) {
+      // ignore
+    }
+  }
 
   async function fetchItem() {
     setLoading(true);
@@ -228,6 +242,12 @@ export default function ArchiveDetailPage() {
               </div>
             )}
           </div>
+
+          {/* OCR & Paleographic Transcription Assistant */}
+          <TranscriptEditor 
+            itemId={parseInt(id, 10)} 
+            canEdit={hasRole('researcher')} 
+          />
         </div>
 
         {/* Right Column: Metadata & Provenance Sidebar */}
@@ -386,6 +406,87 @@ export default function ArchiveDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Related Heritage Records */}
+      {relatedItems.length > 0 && (
+        <div style={{ marginTop: '4rem', paddingTop: '2.5rem', borderTop: '1px solid var(--color-paper-200)' }}>
+          <h3 style={{
+            fontSize: '1.25rem',
+            color: 'var(--color-ink-950)',
+            marginBottom: '0.4rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            Related Heritage Records
+          </h3>
+          <p style={{ fontSize: '0.88rem', color: 'var(--color-stone-600)', marginBottom: '1.5rem' }}>
+            Recommended archives sharing regional water hydrology, Solanki stone carving styles, or thematic tags.
+          </p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+            gap: '1.25rem'
+          }}>
+            {relatedItems.map(rel => (
+              <Link
+                key={rel.id}
+                to={`/archive/${rel.id}`}
+                className="card"
+                style={{
+                  padding: '1rem',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+              >
+                <div style={{
+                  height: '130px',
+                  backgroundColor: 'var(--color-paper-100)',
+                  borderRadius: 'var(--radius-sm)',
+                  overflow: 'hidden',
+                  marginBottom: '0.75rem'
+                }}>
+                  {rel.primary_media_key ? (
+                    <img
+                      src={`/api/v1/media/${rel.primary_media_id}/view`}
+                      alt={rel.primary_media_alt || rel.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <div style={{
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--color-stone-600)',
+                      fontSize: '0.8rem'
+                    }}>
+                      Archive #{rel.id}
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ fontSize: '0.72rem', color: 'var(--color-bronze-600)', fontWeight: 600, textTransform: 'uppercase' }}>
+                  {rel.item_type} • {rel.region}
+                </div>
+
+                <h4 style={{ fontSize: '0.95rem', color: 'var(--color-ink-950)', margin: '0.25rem 0 0.5rem', lineHeight: 1.3 }}>
+                  {rel.title}
+                </h4>
+
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-stone-600)', lineHeight: 1.4, flex: 1 }}>
+                  {rel.summary?.length > 90 ? rel.summary.slice(0, 90) + '...' : rel.summary}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

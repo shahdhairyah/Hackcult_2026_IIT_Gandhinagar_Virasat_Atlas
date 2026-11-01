@@ -15,12 +15,23 @@ class ArchiveItemRepository {
         $conditions = ["ai.status = 'published'", "ai.visibility = 'public'"];
         $bindings = [];
 
-        // 1. Keyword search (MySQL FULLTEXT or LIKE fallback)
+        // 1. Keyword search (MySQL FULLTEXT or LIKE fallback + reviewed OCR transcript)
         $q = trim($params['q'] ?? '');
         if ($q !== '') {
-            $conditions[] = "(MATCH(ai.title, ai.summary, ai.description) AGAINST(? IN BOOLEAN MODE) OR ai.title LIKE ? OR ai.region LIKE ?)";
+            $conditions[] = "(
+                MATCH(ai.title, ai.summary, ai.description) AGAINST(? IN BOOLEAN MODE) 
+                OR ai.title LIKE ? 
+                OR ai.region LIKE ?
+                OR EXISTS (
+                    SELECT 1 FROM ocr_jobs oj 
+                    WHERE oj.archive_item_id = ai.id 
+                      AND oj.status = 'reviewed' 
+                      AND oj.reviewed_text LIKE ?
+                )
+            )";
             $qWildcard = '%' . $q . '%';
             $bindings[] = $q . '*';
+            $bindings[] = $qWildcard;
             $bindings[] = $qWildcard;
             $bindings[] = $qWildcard;
         }
@@ -308,6 +319,51 @@ class ArchiveItemRepository {
         return $stmt->execute([$status, $reviewerId, $reason, $id]);
     }
 
+    public static function getRelatedItems(int $id): array {
+        $pdo = Database::getConnection();
+        $item = self::findById($id);
+        if (!$item) return [];
+
+        $tagIds = !empty($item['tags']) ? array_column($item['tags'], 'id') : [];
+
+        if (!empty($tagIds)) {
+            $inClause = implode(',', array_fill(0, count($tagIds), '?'));
+            $sql = "SELECT DISTINCT ai.id, ai.title, ai.item_type, ai.summary, ai.region,
+                           m.id as primary_media_id, m.storage_key as primary_media_key, m.alt_text as primary_media_alt
+                    FROM archive_items ai
+                    JOIN archive_item_tags ait ON ait.archive_item_id = ai.id
+                    LEFT JOIN media_assets m ON m.archive_item_id = ai.id AND m.is_primary = 1
+                    WHERE ai.id != ? 
+                      AND ai.status = 'published' 
+                      AND ai.visibility = 'public'
+                      AND ait.tag_id IN ($inClause)
+                    GROUP BY ai.id
+                    LIMIT 4";
+            $bindings = array_merge([$id], $tagIds);
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($bindings);
+            $related = $stmt->fetchAll();
+            if (!empty($related)) {
+                return $related;
+            }
+        }
+
+        // Fallback: match by same region
+        $sql = "SELECT DISTINCT ai.id, ai.title, ai.item_type, ai.summary, ai.region,
+                       m.id as primary_media_id, m.storage_key as primary_media_key, m.alt_text as primary_media_alt
+                FROM archive_items ai
+                LEFT JOIN media_assets m ON m.archive_item_id = ai.id AND m.is_primary = 1
+                WHERE ai.id != ? 
+                  AND ai.status = 'published' 
+                  AND ai.visibility = 'public'
+                  AND ai.region = ?
+                GROUP BY ai.id
+                LIMIT 4";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$id, $item['region']]);
+        return $stmt->fetchAll();
+    }
+
     public static function syncTags(int $itemId, array $tags): void {
         $pdo = Database::getConnection();
         $pdo->beginTransaction();
@@ -345,3 +401,4 @@ class ArchiveItemRepository {
         }
     }
 }
+

@@ -11,6 +11,7 @@ import LoginPage from '../features/auth/LoginPage';
 import WorkspacePage from '../features/workspace/WorkspacePage';
 import ContributePage from '../features/workspace/ContributePage';
 import ReviewQueuePage from '../features/review/ReviewQueuePage';
+import PitchDeckPage from '../features/pitch/PitchDeckPage';
 
 // Protected Route Guard
 function RequireAuth({ children, minimumRole = 'researcher' }) {
@@ -51,6 +52,8 @@ export const router = createBrowserRouter([
       { path: 'archive/:id', element: <ArchiveDetailPage /> },
       { path: 'map', element: <MapPage /> },
       { path: 'collections', element: <CollectionsPage /> },
+      { path: 'pitch', element: <PitchDeckPage /> },
+      { path: 'presentation', element: <PitchDeckPage /> },
       { path: 'login', element: <LoginPage /> },
       {
         path: 'workspace',
@@ -88,3 +91,4 @@ export const router = createBrowserRouter([
     ]
   }
 ]);
+

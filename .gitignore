@@ -18,3 +18,4 @@ api/storage/uploads/*
 # Logs and system
 *.log
 .DS_Store
+

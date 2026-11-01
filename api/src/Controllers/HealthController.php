@@ -41,3 +41,4 @@ class HealthController {
         ], null, $isHealthy ? 200 : 503);
     }
 }
+

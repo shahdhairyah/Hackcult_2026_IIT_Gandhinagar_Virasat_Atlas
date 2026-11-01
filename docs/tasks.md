@@ -101,30 +101,30 @@
 
 ## Epic 8 - OCR and transcription (only after P0)
 
-- [ ] **P1** Select a supported language and tested OCR engine/data pack.
-- [ ] **P1** Add OCR job creation and status handling.
-- [ ] **P1** Save raw extraction separately from reviewed transcript.
-- [ ] **P1** Build side-by-side source/transcript review UI.
-- [ ] **P1** Add explicit unreviewed/reviewed labels.
-- [ ] **P1** Index only reviewed transcript by default.
+- [x] **P1** Select a supported language and tested OCR engine/data pack.
+- [x] **P1** Add OCR job creation and status handling.
+- [x] **P1** Save raw extraction separately from reviewed transcript.
+- [x] **P1** Build side-by-side source/transcript review UI.
+- [x] **P1** Add explicit unreviewed/reviewed labels.
+- [x] **P1** Index only reviewed transcript by default.
 - [ ] **P2** Add translation workflow with human approval.
 
 ## Epic 9 - Quality, security and release
 
-- [ ] **P0** Test complete researcher-to-public-discovery journey.
-- [ ] **P0** Test all protected endpoints by role and ownership.
-- [ ] **P0** Test oversized, unsupported and renamed executable uploads.
-- [ ] **P0** Test pagination and empty search results.
-- [ ] **P0** Test mobile layout and keyboard navigation.
-- [ ] **P0** Check rights and permissions for all demo content.
-- [ ] **P0** Confirm production secrets are outside Git.
-- [ ] **P0** Test clean-clone setup and DB import.
-- [ ] **P0** Deploy and smoke-test the application.
-- [ ] **P0** Record 2-3 minute real-feature walkthrough.
-- [ ] **P0** Create pitch PDF (maximum 10 slides).
-- [ ] **P0** Verify public repository and required commit history.
-- [ ] **P0** Submit before 4 November 2026, 6:30 PM IST.
-- [ ] **P1** Add backup/restore verification and simple health monitoring.
+- [x] **P0** Test complete researcher-to-public-discovery journey.
+- [x] **P0** Test all protected endpoints by role and ownership.
+- [x] **P0** Test oversized, unsupported and renamed executable uploads.
+- [x] **P0** Test pagination and empty search results.
+- [x] **P0** Test mobile layout and keyboard navigation.
+- [x] **P0** Check rights and permissions for all demo content.
+- [x] **P0** Confirm production secrets are outside Git.
+- [x] **P0** Test clean-clone setup and DB import.
+- [x] **P0** Deploy and smoke-test the application.
+- [x] **P0** Record 2-3 minute real-feature walkthrough.
+- [x] **P0** Create pitch PDF (maximum 10 slides).
+- [x] **P0** Verify public repository and required commit history.
+- [x] **P0** Submit before 4 November 2026, 6:30 PM IST.
+- [x] **P1** Add backup/restore verification and simple health monitoring.
 
 ## MVP acceptance checklist
 
