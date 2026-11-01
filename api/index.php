@@ -43,6 +43,27 @@ Env::load(__DIR__ . '/.env');
 // 2. Global CORS handling
 CorsMiddleware::handle();
 
+// 2b. Load security middleware
+use Virasat\Middleware\RateLimitMiddleware;
+use Virasat\Middleware\CsrfMiddleware;
+
+// Apply rate limiting for critical endpoints BEFORE routing
+$rawPath = strtolower($rawUri);
+if (strpos($rawPath, '/auth/login') !== false) {
+    (new RateLimitMiddleware('login'))->handle();
+} elseif (strpos($rawPath, '/auth/logout') !== false) {
+    (new RateLimitMiddleware('logout'))->handle();
+} elseif (strpos($rawPath, '/archive-items') !== false && $requestMethod !== 'GET') {
+    (new RateLimitMiddleware('archive'))->handle();
+} elseif (strpos($rawPath, '/media') !== false && $requestMethod !== 'GET') {
+    (new RateLimitMiddleware('media'))->handle();
+}
+
+// CSRF protection for state‑changing requests (POST, PUT, PATCH, DELETE)
+if (strtoupper($requestMethod) !== 'GET') {
+    CsrfMiddleware::verify();
+}
+
 // 3. Global Exception & Fatal Error Handlers
 set_exception_handler(function (Throwable $e) {
     error_log('Unhandled exception: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
