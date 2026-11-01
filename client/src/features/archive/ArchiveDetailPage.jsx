@@ -1,0 +1,391 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { api } from '../../api/client';
+import StatusBadge from '../../components/StatusBadge';
+import ErrorState from '../../components/ErrorState';
+import { 
+  ArrowLeft, 
+  MapPin, 
+  Calendar, 
+  ShieldCheck, 
+  User, 
+  FileText, 
+  ExternalLink, 
+  Clock, 
+  Tag, 
+  Building, 
+  Info,
+  CheckCircle2
+} from 'lucide-react';
+
+export default function ArchiveDetailPage() {
+  const { id } = useParams();
+  const [item, setItem] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchItem();
+  }, [id]);
+
+  async function fetchItem() {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.get(`/archive-items/${id}`);
+      setItem(res.data);
+    } catch (err) {
+      setError(err.message || 'Archive record not found or access restricted.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="container" style={{ padding: '5rem 0', textAlign: 'center', color: 'var(--color-stone-600)' }}>
+        Loading heritage archive record #{id}...
+      </div>
+    );
+  }
+
+  if (error || !item) {
+    return (
+      <div className="container" style={{ padding: '3rem 0' }}>
+        <ErrorState
+          title="Archive Record Unavailable"
+          message={error || "This record might be in draft review or requires researcher access."}
+          onRetry={fetchItem}
+        />
+        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+          <Link to="/" className="btn btn-secondary btn-sm">
+            <ArrowLeft size={14} /> Back to Public Explore
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const primaryMedia = item.media?.find(m => m.is_primary) || item.media?.[0];
+
+  return (
+    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '5rem' }}>
+      {/* Breadcrumb */}
+      <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--color-stone-600)' }}>
+        <Link to="/" style={{ color: 'var(--color-bronze-600)' }}>Archive</Link>
+        <span>/</span>
+        <Link to={`/?type=${item.item_type}`} style={{ color: 'var(--color-bronze-600)', textTransform: 'capitalize' }}>{item.item_type}</Link>
+        <span>/</span>
+        <span style={{ color: 'var(--color-stone-600)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '300px' }}>
+          {item.title}
+        </span>
+      </div>
+
+      {/* Title & Badges */}
+      <div style={{ marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
+          <StatusBadge status={item.status} />
+          <span className="badge badge-type">{item.item_type}</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', color: 'var(--color-stone-600)' }}>
+            <MapPin size={14} color="var(--color-bronze-600)" />
+            {item.location_name || item.region}
+          </span>
+        </div>
+
+        <h1 style={{ fontSize: '2.2rem', color: 'var(--color-ink-950)', lineHeight: 1.25 }}>
+          {item.title}
+        </h1>
+      </div>
+
+      {/* Main Grid: Media & Observation + Metadata Sidebar */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+        gap: '2.5rem',
+        alignItems: 'start'
+      }}>
+        {/* Left Column: Media Viewer & Narrative */}
+        <div>
+          {/* Master Media Display */}
+          {primaryMedia ? (
+            <div className="card" style={{ overflow: 'hidden', marginBottom: '2rem' }}>
+              <div style={{
+                maxHeight: '480px',
+                backgroundColor: 'var(--color-ink-950)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden'
+              }}>
+                <img
+                  src={`/api/v1/media/${primaryMedia.id}/view`}
+                  alt={primaryMedia.alt_text || item.title}
+                  style={{ maxWidth: '100%', maxHeight: '480px', objectFit: 'contain' }}
+                />
+              </div>
+
+              {(primaryMedia.caption || primaryMedia.alt_text) && (
+                <div style={{
+                  padding: '1rem 1.25rem',
+                  backgroundColor: 'var(--color-paper-50)',
+                  borderTop: '1px solid var(--color-paper-200)',
+                  fontSize: '0.85rem',
+                  color: 'var(--color-stone-600)'
+                }}>
+                  {primaryMedia.caption && (
+                    <div style={{ fontWeight: 500, color: 'var(--color-ink-800)', marginBottom: '0.2rem' }}>
+                      {primaryMedia.caption}
+                    </div>
+                  )}
+                  {primaryMedia.alt_text && (
+                    <div style={{ fontSize: '0.75rem', fontStyle: 'italic' }}>
+                      Alt: {primaryMedia.alt_text}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div style={{
+              padding: '3rem',
+              backgroundColor: 'var(--color-paper-100)',
+              borderRadius: 'var(--radius-md)',
+              textAlign: 'center',
+              color: 'var(--color-stone-600)',
+              marginBottom: '2rem'
+            }}>
+              No master media file attached to this record.
+            </div>
+          )}
+
+          {/* Record Narrative */}
+          <div className="card" style={{ padding: '2rem' }}>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--color-ink-950)' }}>
+              Summary &amp; Cultural Context
+            </h3>
+
+            <p style={{
+              fontSize: '1.05rem',
+              color: 'var(--color-ink-950)',
+              lineHeight: 1.6,
+              marginBottom: '1.5rem',
+              fontWeight: 500
+            }}>
+              {item.summary}
+            </p>
+
+            {item.description && (
+              <div>
+                <h4 style={{ fontSize: '1rem', marginBottom: '0.65rem', color: 'var(--color-ink-800)' }}>
+                  Architectural &amp; Epigraphic Observations
+                </h4>
+                <div style={{
+                  fontSize: '0.92rem',
+                  color: 'var(--color-stone-600)',
+                  lineHeight: 1.8,
+                  whiteSpace: 'pre-line'
+                }}>
+                  {item.description}
+                </div>
+              </div>
+            )}
+
+            {/* Curatorial Tags */}
+            {item.tags && item.tags.length > 0 && (
+              <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--color-paper-200)' }}>
+                <div style={{
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                  color: 'var(--color-stone-600)',
+                  marginBottom: '0.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem'
+                }}>
+                  <Tag size={13} color="var(--color-bronze-600)" />
+                  Thematic Tags
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {item.tags.map(t => (
+                    <Link
+                      key={t.slug}
+                      to={`/?tag=${t.slug}`}
+                      style={{
+                        fontSize: '0.8rem',
+                        backgroundColor: 'var(--color-paper-100)',
+                        padding: '0.25rem 0.65rem',
+                        borderRadius: 'var(--radius-sm)',
+                        color: 'var(--color-ink-950)',
+                        textDecoration: 'none'
+                      }}
+                    >
+                      #{t.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column: Metadata & Provenance Sidebar */}
+        <div>
+          {/* Spatial & Temporal Context */}
+          <div className="card" style={{ padding: '1.75rem', marginBottom: '1.5rem' }}>
+            <h3 style={{
+              fontSize: '1rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              color: 'var(--color-stone-600)',
+              marginBottom: '1.25rem',
+              borderBottom: '1px solid var(--color-paper-200)',
+              paddingBottom: '0.5rem'
+            }}>
+              Spatial &amp; Historical Context
+            </h3>
+
+            <dl style={{ display: 'grid', gap: '0.85rem', fontSize: '0.88rem' }}>
+              <div>
+                <dt style={{ color: 'var(--color-stone-600)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Named Location</dt>
+                <dd style={{ fontWeight: 600, color: 'var(--color-ink-950)' }}>
+                  {item.location_name || item.region}
+                </dd>
+              </div>
+
+              <div>
+                <dt style={{ color: 'var(--color-stone-600)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Region / State</dt>
+                <dd style={{ color: 'var(--color-ink-950)' }}>
+                  {item.region}{item.location_state ? `, ${item.location_state}` : ''}, {item.location_country || 'India'}
+                </dd>
+              </div>
+
+              {item.latitude && item.longitude && (
+                <div>
+                  <dt style={{ color: 'var(--color-stone-600)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Geographic Coordinates</dt>
+                  <dd style={{ fontFamily: 'monospace', fontSize: '0.85rem', color: 'var(--color-blue-700)' }}>
+                    {parseFloat(item.latitude).toFixed(5)}° N, {parseFloat(item.longitude).toFixed(5)}° E
+                  </dd>
+                </div>
+              )}
+
+              {item.historical_period && (
+                <div>
+                  <dt style={{ color: 'var(--color-stone-600)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Historical Period</dt>
+                  <dd style={{ color: 'var(--color-ink-950)', fontWeight: 500 }}>
+                    {item.historical_period}
+                  </dd>
+                </div>
+              )}
+
+              {item.capture_date && (
+                <div>
+                  <dt style={{ color: 'var(--color-stone-600)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Documentation Date</dt>
+                  <dd style={{ color: 'var(--color-ink-950)' }}>
+                    {new Date(item.capture_date).toLocaleDateString()}
+                  </dd>
+                </div>
+              )}
+
+              {item.language && (
+                <div>
+                  <dt style={{ color: 'var(--color-stone-600)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Source Language</dt>
+                  <dd style={{ color: 'var(--color-ink-950)' }}>
+                    {item.language}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </div>
+
+          {/* Provenance & Rights Box */}
+          <div className="card" style={{
+            padding: '1.75rem',
+            backgroundColor: '#FCFAF7',
+            border: '1px solid var(--color-sand-300)',
+            marginBottom: '1.5rem'
+          }}>
+            <h3 style={{
+              fontSize: '1rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              color: 'var(--color-bronze-600)',
+              marginBottom: '1.25rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              borderBottom: '1px solid var(--color-paper-200)',
+              paddingBottom: '0.5rem'
+            }}>
+              <ShieldCheck size={16} />
+              Provenance &amp; Attribution
+            </h3>
+
+            <dl style={{ display: 'grid', gap: '0.85rem', fontSize: '0.88rem' }}>
+              <div>
+                <dt style={{ color: 'var(--color-stone-600)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Originating Source</dt>
+                <dd style={{ fontWeight: 600, color: 'var(--color-ink-950)' }}>
+                  {item.source}
+                </dd>
+              </div>
+
+              {item.creator && (
+                <div>
+                  <dt style={{ color: 'var(--color-stone-600)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Investigator / Creator</dt>
+                  <dd style={{ color: 'var(--color-ink-950)' }}>
+                    {item.creator}
+                  </dd>
+                </div>
+              )}
+
+              <div>
+                <dt style={{ color: 'var(--color-stone-600)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Rights &amp; Permission Status</dt>
+                <dd style={{ marginTop: '0.2rem' }}>
+                  <span className="badge badge-published" style={{ textTransform: 'none', fontSize: '0.8rem' }}>
+                    {item.rights_status.toUpperCase().replace(/_/g, '-')}
+                  </span>
+                </dd>
+              </div>
+
+              {item.attribution_text && (
+                <div style={{ marginTop: '0.25rem' }}>
+                  <dt style={{ color: 'var(--color-stone-600)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Attribution Statement</dt>
+                  <dd style={{
+                    marginTop: '0.25rem',
+                    padding: '0.65rem',
+                    backgroundColor: '#fff',
+                    borderRadius: 'var(--radius-sm)',
+                    border: '1px solid var(--color-paper-200)',
+                    fontSize: '0.82rem',
+                    color: 'var(--color-ink-950)',
+                    fontStyle: 'italic'
+                  }}>
+                    {item.attribution_text}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </div>
+
+          {/* Editorial Audit Note */}
+          <div className="card" style={{ padding: '1.25rem', fontSize: '0.82rem', color: 'var(--color-stone-600)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--color-ink-800)', fontWeight: 600, marginBottom: '0.4rem' }}>
+              <CheckCircle2 size={15} color="var(--color-green-700)" />
+              Editorial Review Status
+            </div>
+            <div>Submitted by: <strong>{item.submitter_name}</strong></div>
+            {item.reviewer_name && (
+              <div>Reviewed &amp; Approved by: <strong>{item.reviewer_name}</strong></div>
+            )}
+            {item.reviewed_at && (
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-stone-400)', marginTop: '0.2rem' }}>
+                Archival approval logged on {new Date(item.reviewed_at).toLocaleString()}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

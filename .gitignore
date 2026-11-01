@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Environment files
+*.env.local
+client/.env.local
+
+# Build output
+dist/
+client/dist/
+
+# Storage
+api/storage/uploads/*
+!api/storage/uploads/.htaccess
+!api/storage/uploads/*.svg
+
+# Logs and system
+*.log
+.DS_Store
