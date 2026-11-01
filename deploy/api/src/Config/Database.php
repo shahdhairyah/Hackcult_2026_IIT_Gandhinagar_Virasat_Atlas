@@ -16,7 +16,7 @@ class Database {
 
         $host = Env::get('DB_HOST', 'sql308.infinityfree.com');
         $port = Env::get('DB_PORT', '3306');
-        $db   = Env::get('DB_DATABASE', 'if0_43194312_hackclt26');
+        $db   = Env::get('DB_DATABASE', 'if0_43194312_hackcult26');
         $user = Env::get('DB_USERNAME', 'if0_43194312');
         $pass = Env::get('DB_PASSWORD', 'WWeqIqyQcPCcYy');
 

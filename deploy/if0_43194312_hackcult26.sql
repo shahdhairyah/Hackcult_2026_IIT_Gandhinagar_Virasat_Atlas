@@ -116,12 +116,12 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `archive_items` WRITE;
 /*!40000 ALTER TABLE `archive_items` DISABLE KEYS */;
 INSERT INTO `archive_items` VALUES
-(1,'Subterranean Sculptural Pavilions of Rani ki Vav','monument','Seven tiers of carved sandstone panels depicting the Dashavatara and sacred water symbolism in Patan.','Built during the reign of the Chaulukya (Solanki) king Bhima I by his widowed queen Udayamati in the late 11th century. The inverted temple design honours the sanctity of water across seven terraced levels, housing more than 500 principal sculptures and a thousand minor ones that combine religious, mythological, and secular imagery.',1,'Patan',23.8589000,72.1018000,'2025-12-14','Late 11th Century CE (Solanki Period)','English','Heritage Survey Expedition 2025','Archaeological Survey Field Notes, Vol. 14','cc_by_sa','Photographed and documented by Heritage Survey Expedition 2025 under CC-BY-SA 4.0.','published','public',NULL,3,2,'2026-01-10 05:00:00','2026-11-01 10:47:24','2026-11-01 10:47:24'),
-(2,'Pillared Octagonal Corridors of Adalaj Vav','architecture','Five-storey subterranean structure with Solanki and Sultanate floral stone motifs in Gandhinagar district.','The stepwell was commissioned in 1498 by Queen Rudabai in memory of Rana Veer Singh. The architecture uniquely blends Solanki Hindu iconography with Indo-Islamic floral tracery, incorporating three entrance stairs leading into a subterranean octagonal pool that moderated microclimatic heat for travellers on regional trade routes.',2,'Gandhinagar',23.1667000,72.5801000,'2026-02-03','15th Century CE (1498 CE)','English','Aarav Patel','IIT Gandhinagar Cultural Documentation Initiative','cc_by','Photo courtesy of Aarav Patel, IITGN Cultural Lab. Licensed under CC-BY 4.0.','published','public',NULL,3,2,'2026-02-05 08:45:00','2026-11-01 10:47:25','2026-11-01 10:47:25'),
-(3,'Surya Kund and Sabha Mandapa of the Modhera Sun Temple','monument','Stepped geometric reservoir featuring 108 miniature shrines facing the 11th-century assembly hall.','Constructed after 1026-27 CE by King Bhimadeva I of the Solanki dynasty. The Surya Kund is an intricately stepped water tank featuring miniature shrines dedicated to Vishnu, Ganesha, and manifestations of Shiva. The alignment allows equinoctial sunrise rays to pass through the pillared assembly hall into the sanctum.',3,'Mehsana',23.5836000,72.1332000,'2026-01-20','Early 11th Century CE (c. 1026 CE)','English','Prof. Rajesh Verma','Western India Architectural Heritage Archive','public_domain','Source material placed in Public Domain by Western India Architectural Archive.','published','public',NULL,3,2,'2026-01-25 03:30:00','2026-11-01 10:47:25','2026-11-01 10:47:25'),
-(4,'Field Survey Notebook: Hydraulic Gradient Observations at Mehsana Stepwells','field_note','Original notebook records measuring seasonal water table elevations and decorative frieze weathering.','Field observations recorded between November 2025 and January 2026 documenting six secondary stepwells in Mehsana and Patan districts. Includes notes on salinity ingress, micro-cracks in frieze layers, and local folklore surrounding dry subterranean wells.',3,'Mehsana',23.5836000,72.1332000,'2026-03-01','Contemporary Fieldwork (2025-2026)','English','Aarav Patel','IITGN Field Survey Log #04','permission_granted','Field notes recorded by Aarav Patel; publication approved for research use.','draft','private',NULL,3,NULL,NULL,'2026-11-01 10:47:25','2026-11-01 10:47:25'),
-(5,'Sanskrit and Gujarati Inscription Plate from Patan Stepwell Shaft','document','Epigraphic scan documenting dedication verses and mason guild marks in Devanagari script.','High-resolution surface impression and digital scan of a bilingual dedication tablet. Records references to donor lineages, the architect overseer (Sutradhara), and astrological dates commemorating the water blessing ceremony.',1,'Patan',23.8589000,72.1018000,'2026-02-15','13th Century CE','Sanskrit','Epigraphy Department, State Archaeology','Archive Registration #EPI-2026-09','permission_pending','Scanned with permission of State Epigraphy Unit; rights review in progress.','pending_review','unlisted',NULL,3,NULL,NULL,'2026-11-01 10:47:25','2026-11-01 10:47:25'),
-(6,'Double-Ikat Silk Weaving Archive: Master Weaver Silk Chart','craft','Technical diagram illustrating warp and weft tie-dye mathematical calculations for traditional Patola motifs.','The Salvi community preserved the geometric double-ikat technique in Patan since the 12th century under the patronage of King Kumarapala. This archive record captures the graph-paper master charts (naqsha) used to align naturally dyed resist patterns before loom mounting.',1,'Patan',23.8589000,72.1018000,'2025-11-28','Heritage Living Craft Tradition','Gujarati','Salvi Artisan Guild & Cultural Documentation Team','Patan Living Heritage Project','cc_by','Documented with the consent of the Salvi Artisan Guild; licensed under CC-BY 4.0.','published','public',NULL,3,2,'2025-12-05 05:30:00','2026-11-01 10:47:25','2026-11-01 10:47:25');
+(1,'Subterranean Sculptural Pavilions of Rani ki Vav','monument','Seven tiers of carved sandstone panels depicting the Dashavatara and sacred water symbolism in Patan.','Built during the reign of the Chaulukya (Solanki) king Bhima I by his widowed queen Udayamati in the late 11th century. The inverted temple design honours the sanctity of water across seven terraced levels, housing more than 500 principal sculptures and a thousand minor ones that combine religious, mythological, and secular imagery.',1,'Patan',23.8589000,72.1018000,'2025-12-14','Late 11th Century CE (Solanki Period)','English','Heritage Survey Expedition 2025','Archaeological Survey Field Notes, Vol. 14','cc_by_sa','Photographed and documented by Heritage Survey Expedition 2025 under CC-BY-SA 4.0.','published','public',NULL,3,2,'2026-01-10 05:00:00','2026-11-01 10:56:58','2026-11-01 10:56:58'),
+(2,'Pillared Octagonal Corridors of Adalaj Vav','architecture','Five-storey subterranean structure with Solanki and Sultanate floral stone motifs in Gandhinagar district.','The stepwell was commissioned in 1498 by Queen Rudabai in memory of Rana Veer Singh. The architecture uniquely blends Solanki Hindu iconography with Indo-Islamic floral tracery, incorporating three entrance stairs leading into a subterranean octagonal pool that moderated microclimatic heat for travellers on regional trade routes.',2,'Gandhinagar',23.1667000,72.5801000,'2026-02-03','15th Century CE (1498 CE)','English','Aarav Patel','IIT Gandhinagar Cultural Documentation Initiative','cc_by','Photo courtesy of Aarav Patel, IITGN Cultural Lab. Licensed under CC-BY 4.0.','published','public',NULL,3,2,'2026-02-05 08:45:00','2026-11-01 10:56:58','2026-11-01 10:56:58'),
+(3,'Surya Kund and Sabha Mandapa of the Modhera Sun Temple','monument','Stepped geometric reservoir featuring 108 miniature shrines facing the 11th-century assembly hall.','Constructed after 1026-27 CE by King Bhimadeva I of the Solanki dynasty. The Surya Kund is an intricately stepped water tank featuring miniature shrines dedicated to Vishnu, Ganesha, and manifestations of Shiva. The alignment allows equinoctial sunrise rays to pass through the pillared assembly hall into the sanctum.',3,'Mehsana',23.5836000,72.1332000,'2026-01-20','Early 11th Century CE (c. 1026 CE)','English','Prof. Rajesh Verma','Western India Architectural Heritage Archive','public_domain','Source material placed in Public Domain by Western India Architectural Archive.','published','public',NULL,3,2,'2026-01-25 03:30:00','2026-11-01 10:56:58','2026-11-01 10:56:58'),
+(4,'Field Survey Notebook: Hydraulic Gradient Observations at Mehsana Stepwells','field_note','Original notebook records measuring seasonal water table elevations and decorative frieze weathering.','Field observations recorded between November 2025 and January 2026 documenting six secondary stepwells in Mehsana and Patan districts. Includes notes on salinity ingress, micro-cracks in frieze layers, and local folklore surrounding dry subterranean wells.',3,'Mehsana',23.5836000,72.1332000,'2026-03-01','Contemporary Fieldwork (2025-2026)','English','Aarav Patel','IITGN Field Survey Log #04','permission_granted','Field notes recorded by Aarav Patel; publication approved for research use.','draft','private',NULL,3,NULL,NULL,'2026-11-01 10:56:58','2026-11-01 10:56:58'),
+(5,'Sanskrit and Gujarati Inscription Plate from Patan Stepwell Shaft','document','Epigraphic scan documenting dedication verses and mason guild marks in Devanagari script.','High-resolution surface impression and digital scan of a bilingual dedication tablet. Records references to donor lineages, the architect overseer (Sutradhara), and astrological dates commemorating the water blessing ceremony.',1,'Patan',23.8589000,72.1018000,'2026-02-15','13th Century CE','Sanskrit','Epigraphy Department, State Archaeology','Archive Registration #EPI-2026-09','permission_pending','Scanned with permission of State Epigraphy Unit; rights review in progress.','pending_review','unlisted',NULL,3,NULL,NULL,'2026-11-01 10:56:58','2026-11-01 10:56:58'),
+(6,'Double-Ikat Silk Weaving Archive: Master Weaver Silk Chart','craft','Technical diagram illustrating warp and weft tie-dye mathematical calculations for traditional Patola motifs.','The Salvi community preserved the geometric double-ikat technique in Patan since the 12th century under the patronage of King Kumarapala. This archive record captures the graph-paper master charts (naqsha) used to align naturally dyed resist patterns before loom mounting.',1,'Patan',23.8589000,72.1018000,'2025-11-28','Heritage Living Craft Tradition','Gujarati','Salvi Artisan Guild & Cultural Documentation Team','Patan Living Heritage Project','cc_by','Documented with the consent of the Salvi Artisan Guild; licensed under CC-BY 4.0.','published','public',NULL,3,2,'2025-12-05 05:30:00','2026-11-01 10:56:58','2026-11-01 10:56:58');
 /*!40000 ALTER TABLE `archive_items` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -159,7 +159,7 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `audit_logs` WRITE;
 /*!40000 ALTER TABLE `audit_logs` DISABLE KEYS */;
 INSERT INTO `audit_logs` VALUES
-(1,1,'system_seed','system',1,'{\"message\":\"Initial database seed completed for Virasat Atlas.\"}',NULL,'2026-11-01 10:47:25');
+(1,1,'system_seed','system',1,'{\"message\":\"Initial database seed completed for Virasat Atlas.\"}',NULL,'2026-11-01 10:56:58');
 /*!40000 ALTER TABLE `audit_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -234,8 +234,8 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `collections` WRITE;
 /*!40000 ALTER TABLE `collections` DISABLE KEYS */;
 INSERT INTO `collections` VALUES
-(1,'Stepwells of Western India: Sacred Subterranean Waters','stepwells-western-india','A curated journey through the masterworks of inverted water architecture in Gujarat.','From seven-tier subterranean sanctums to communal traveller resting pavilions, stepwells (vavs) represent an engineering response to seasonal arid climates transformed into enduring sacred architecture.',2,NULL,1,'2026-11-01 10:47:25','2026-11-01 10:47:25'),
-(2,'Solanki Dynasty Imperial Architecture','solanki-dynasty-architecture','Exploration of 11th-century Chaulukya stone temples, stepwells, and monumental civic structures.','Documenting the Maru-Gurjara style characterised by meticulous stone carving, solar geometry, and ceremonial reservoirs.',2,NULL,1,'2026-11-01 10:47:25','2026-11-01 10:47:25');
+(1,'Stepwells of Western India: Sacred Subterranean Waters','stepwells-western-india','A curated journey through the masterworks of inverted water architecture in Gujarat.','From seven-tier subterranean sanctums to communal traveller resting pavilions, stepwells (vavs) represent an engineering response to seasonal arid climates transformed into enduring sacred architecture.',2,NULL,1,'2026-11-01 10:56:58','2026-11-01 10:56:58'),
+(2,'Solanki Dynasty Imperial Architecture','solanki-dynasty-architecture','Exploration of 11th-century Chaulukya stone temples, stepwells, and monumental civic structures.','Documenting the Maru-Gurjara style characterised by meticulous stone carving, solar geometry, and ceremonial reservoirs.',2,NULL,1,'2026-11-01 10:56:58','2026-11-01 10:56:58');
 /*!40000 ALTER TABLE `collections` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -273,11 +273,11 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `locations` WRITE;
 /*!40000 ALTER TABLE `locations` DISABLE KEYS */;
 INSERT INTO `locations` VALUES
-(1,'Rani ki Vav (The Queen\'s Stepwell)','Patan','Gujarat','India',23.8589000,72.1018000,0,'UNESCO World Heritage site on the banks of the Saraswati River.','2026-11-01 10:47:24'),
-(2,'Adalaj Stepwell (Rudabai Stepwell)','Gandhinagar','Gujarat','India',23.1667000,72.5801000,0,'Five-story octagonal stepwell built in 1498 by Queen Rudadevi.','2026-11-01 10:47:24'),
-(3,'Sun Temple, Modhera','Mehsana','Gujarat','India',23.5836000,72.1332000,0,'11th century Solanki dynasty temple complex dedicated to the solar deity Surya.','2026-11-01 10:47:24'),
-(4,'Sarkhej Roza Architectural Complex','Ahmedabad','Gujarat','India',22.9806000,72.5028000,0,'Mosque and tomb complex exemplifying the Sultanate architectural style of Gujarat.','2026-11-01 10:47:24'),
-(5,'Champaner-Pavagadh Archaeological Park','Panchmahal','Gujarat','India',22.4851000,73.5358000,0,'Historic city transitioning from Hindu-Jain to Islamic architecture.','2026-11-01 10:47:24');
+(1,'Rani ki Vav (The Queen\'s Stepwell)','Patan','Gujarat','India',23.8589000,72.1018000,0,'UNESCO World Heritage site on the banks of the Saraswati River.','2026-11-01 10:56:58'),
+(2,'Adalaj Stepwell (Rudabai Stepwell)','Gandhinagar','Gujarat','India',23.1667000,72.5801000,0,'Five-story octagonal stepwell built in 1498 by Queen Rudadevi.','2026-11-01 10:56:58'),
+(3,'Sun Temple, Modhera','Mehsana','Gujarat','India',23.5836000,72.1332000,0,'11th century Solanki dynasty temple complex dedicated to the solar deity Surya.','2026-11-01 10:56:58'),
+(4,'Sarkhej Roza Architectural Complex','Ahmedabad','Gujarat','India',22.9806000,72.5028000,0,'Mosque and tomb complex exemplifying the Sultanate architectural style of Gujarat.','2026-11-01 10:56:58'),
+(5,'Champaner-Pavagadh Archaeological Park','Panchmahal','Gujarat','India',22.4851000,73.5358000,0,'Historic city transitioning from Hindu-Jain to Islamic architecture.','2026-11-01 10:56:58');
 /*!40000 ALTER TABLE `locations` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -316,11 +316,11 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `media_assets` WRITE;
 /*!40000 ALTER TABLE `media_assets` DISABLE KEYS */;
 INSERT INTO `media_assets` VALUES
-(1,1,'40983ab73b73d339d92bc2124ab263e2.svg','rani_ki_vav_tiers.svg','image/svg+xml',685,'afa82c050d057ebc4a7587afccf61cd1bf8587c340d8aa52166e1d5e836d327f','Seven tiers of carved sandstone panels at Rani ki Vav','The western pavilion tiers leading down to the well shaft.',1,'2026-11-01 10:47:25'),
-(2,2,'c3720cb9c3672adf269c902c0684361d.svg','adalaj_stepwell_octagonal.svg','image/svg+xml',682,'844a13e42334e1922041bf9d4b64be876538d74d065c45dc574b7dfa4e69c61c','Pillared octagonal corridors of Adalaj Vav','Shaft corridors showing Solanki stone friezes and light shafts.',1,'2026-11-01 10:47:25'),
-(3,3,'5354b4137cc633454f5ecc4ca5e653d9.svg','modhera_surya_kund.svg','image/svg+xml',681,'9c0cb70f7430df14b51f2ff1aeee4222e0f33f5331c0db03ad28b105a8ccc3b6','Stepped geometric reservoir of Surya Kund Modhera','Miniature shrines framing the ceremonial stepped water body.',1,'2026-11-01 10:47:25'),
-(4,5,'dddea1384145fa119927af3bc68c7b67.svg','patan_inscription_plate.svg','image/svg+xml',686,'b10aed74b826a79edff9bc7c3da3435f8e0fe02296b4a87f2b3f5bf58d3cecb3','High resolution scan of epigraphic dedication tablet','Bilingual Sanskrit-Gujarati stone inscription rubric.',1,'2026-11-01 10:47:25'),
-(5,6,'88342536de4b103aad4743106e338193.svg','patola_weaving_chart.svg','image/svg+xml',682,'49c2acd9b36582cd3ba7a07245da1b32bb5eb8ed2f751a8bfa0b372c737784ef','Double ikat weaving geometric layout graph','Artisan graph chart indicating red and gold silk thread alignments.',1,'2026-11-01 10:47:25');
+(1,1,'9d798361915a9470730bb3b60af58068.svg','rani_ki_vav_tiers.svg','image/svg+xml',685,'afa82c050d057ebc4a7587afccf61cd1bf8587c340d8aa52166e1d5e836d327f','Seven tiers of carved sandstone panels at Rani ki Vav','The western pavilion tiers leading down to the well shaft.',1,'2026-11-01 10:56:58'),
+(2,2,'8c56e87b461ef0e488f2b731b5a67e2b.svg','adalaj_stepwell_octagonal.svg','image/svg+xml',682,'844a13e42334e1922041bf9d4b64be876538d74d065c45dc574b7dfa4e69c61c','Pillared octagonal corridors of Adalaj Vav','Shaft corridors showing Solanki stone friezes and light shafts.',1,'2026-11-01 10:56:58'),
+(3,3,'2fbfd09eca63cc94814105eccd0164ba.svg','modhera_surya_kund.svg','image/svg+xml',681,'9c0cb70f7430df14b51f2ff1aeee4222e0f33f5331c0db03ad28b105a8ccc3b6','Stepped geometric reservoir of Surya Kund Modhera','Miniature shrines framing the ceremonial stepped water body.',1,'2026-11-01 10:56:58'),
+(4,5,'55ae629ad5823c4d63d83c134c516dc2.svg','patan_inscription_plate.svg','image/svg+xml',686,'b10aed74b826a79edff9bc7c3da3435f8e0fe02296b4a87f2b3f5bf58d3cecb3','High resolution scan of epigraphic dedication tablet','Bilingual Sanskrit-Gujarati stone inscription rubric.',1,'2026-11-01 10:56:58'),
+(5,6,'b78f62c27774f7d7fe89629530267848.svg','patola_weaving_chart.svg','image/svg+xml',682,'49c2acd9b36582cd3ba7a07245da1b32bb5eb8ed2f751a8bfa0b372c737784ef','Double ikat weaving geometric layout graph','Artisan graph chart indicating red and gold silk thread alignments.',1,'2026-11-01 10:56:58');
 /*!40000 ALTER TABLE `media_assets` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -385,7 +385,7 @@ CREATE TABLE `saved_items` (
   KEY `fk_saved_item` (`archive_item_id`),
   CONSTRAINT `fk_saved_item` FOREIGN KEY (`archive_item_id`) REFERENCES `archive_items` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_saved_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -396,7 +396,7 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `saved_items` WRITE;
 /*!40000 ALTER TABLE `saved_items` DISABLE KEYS */;
 INSERT INTO `saved_items` VALUES
-(8,3,1,'2026-11-01 10:45:55');
+(9,3,1,'2026-11-01 10:48:59');
 /*!40000 ALTER TABLE `saved_items` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -471,10 +471,10 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` VALUES
-(1,'admin@virasat.org','$2y$10$20PxYM0D9jBQ.PwTnqt6L.FHqhuJq/19fg1nr75Xcx9GQWcSL6nha','Dr. Sunita Sen','admin','National Heritage Archive Council','2026-11-01 10:47:24','2026-11-01 10:47:24'),
-(2,'reviewer@virasat.org','$2y$10$qmRvG1SqNN5IRY1vMPI1teQhYYC7.PzLstZwFZ3H5jMxNUnOCbT3G','Prof. Rajesh Verma','reviewer','School of Architectural History','2026-11-01 10:47:24','2026-11-01 10:47:24'),
-(3,'researcher@virasat.org','$2y$10$xe6Teu4lKGJOpW8C6Ax9weCoO7ZLCtQhKoX84vlSZL6F841b.wKRu','Aarav Patel','researcher','IIT Gandhinagar Heritage Lab','2026-11-01 10:47:24','2026-11-01 10:47:24'),
-(4,'visitor@virasat.org','$2y$10$aJzmASSRJBYqNpJMhZmOw.XlGbsK2bRS5gmkGTpiufM/m1/Ln4nxK','Neha Sharma','visitor','Independent Researcher','2026-11-01 10:47:24','2026-11-01 10:47:24');
+(1,'admin@virasat.org','$2y$10$fqzqclJZXTWo8gBr6da51O76ch3TgUxntqVuZcgNpOyIiTwJScYFC','Dr. Sunita Sen','admin','National Heritage Archive Council','2026-11-01 10:56:57','2026-11-01 10:56:57'),
+(2,'reviewer@virasat.org','$2y$10$P60jkHUmUnL0lehCAdZVKOWfAiODtUCWWKgdyd.J7bD89yupeBWv2','Prof. Rajesh Verma','reviewer','School of Architectural History','2026-11-01 10:56:57','2026-11-01 10:56:57'),
+(3,'researcher@virasat.org','$2y$10$uLC59ldNI5o5tnBSOGSch.9vZ/hXtOL35PnzdTnWeCJi1tMD6JP1e','Aarav Patel','researcher','IIT Gandhinagar Heritage Lab','2026-11-01 10:56:57','2026-11-01 10:56:57'),
+(4,'visitor@virasat.org','$2y$10$3BnfiJVOsxfF0sMOYea6MOf1WqLse1TLiR48o81e/QM1oCyjRos.O','Neha Sharma','visitor','Independent Researcher','2026-11-01 10:56:58','2026-11-01 10:56:58');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -489,4 +489,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-11-01 16:17:25
+-- Dump completed on 2026-11-01 16:26:58

@@ -8,7 +8,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 $host = 'sql308.infinityfree.com';
 $port = '3306';
-$dbname = 'if0_43194312_hackclt26';
+$dbname = 'if0_43194312_hackcult26';
 $user = 'if0_43194312';
 $pass = 'WWeqIqyQcPCcYy';
 
@@ -62,7 +62,7 @@ $pass = 'WWeqIqyQcPCcYy';
         echo '<div class="status-err">Connection Failed: ' . htmlspecialchars($lastError) . '</div>';
         echo '<p>Troubleshooting steps:</p>';
         echo '<ul>';
-        echo '<li>Ensure your MySQL database <code>' . htmlspecialchars($dbname) . '</code> was created in InfinityFree cPanel.</li>';
+        echo '<li>Ensure your MySQL database <code>' . htmlspecialchars($dbname) . '</code> exists in InfinityFree cPanel.</li>';
         echo '<li>Verify that the password matches your InfinityFree vPPanel account password.</li>';
         echo '<li>Confirm that MySQL Hostname is <code>' . htmlspecialchars($host) . '</code>.</li>';
         echo '</ul>';

@@ -8,11 +8,11 @@ header('Content-Type: text/html; charset=utf-8');
 
 $host = 'sql308.infinityfree.com';
 $port = '3306';
-$dbname = 'if0_43194312_hackclt26';
+$dbname = 'if0_43194312_hackcult26';
 $user = 'if0_43194312';
 $pass = 'WWeqIqyQcPCcYy';
 
-$sqlFile = __DIR__ . '/if0_43194312_hackclt26.sql';
+$sqlFile = __DIR__ . '/if0_43194312_hackcult26.sql';
 
 $installed = false;
 $error = null;
@@ -190,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_install'])) {
         </form>
 
         <div style="margin-top: 1.5rem; font-size: 0.85rem; color: #6F6A61;">
-            <em>Note: Alternatively, you can import <code>if0_43194312_hackclt26.sql</code> directly via phpMyAdmin in your cPanel.</em>
+            <em>Note: Alternatively, you can import <code>if0_43194312_hackcult26.sql</code> directly via phpMyAdmin in your cPanel.</em>
         </div>
     <?php endif; ?>
 </div>

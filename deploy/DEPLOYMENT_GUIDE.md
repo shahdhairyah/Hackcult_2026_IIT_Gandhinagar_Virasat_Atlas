@@ -10,7 +10,7 @@ This guide explains how to deploy the **Virasat Atlas** application to your Infi
 |---|---|
 | **Website URL** | **`http://hackcult26.gt.tc`** |
 | **MySQL Host** | `sql308.infinityfree.com` |
-| **MySQL Database** | `if0_43194312_hackclt26` |
+| **MySQL Database** | **`if0_43194312_hackcult26`** |
 | **MySQL Username** | `if0_43194312` |
 | **MySQL Password** | `WWeqIqyQcPCcYy` |
 | **Hosting Web Root** | `/htdocs` (or `/hackcult26.gt.tc/htdocs`) |
@@ -19,13 +19,15 @@ This guide explains how to deploy the **Virasat Atlas** application to your Infi
 
 ## 2. Issues Fixed in this Build
 
-1. **MySQL `ONLY_FULL_GROUP_BY` (Error 1055) Resolved:**  
+1. **Database Name Corrected:**  
+   Updated database name to `if0_43194312_hackcult26` (with 'u' in cult).
+2. **MySQL `ONLY_FULL_GROUP_BY` (Error 1055) Resolved:**  
    Removed conflicting `GROUP BY` clauses across `ArchiveItemRepository` and `CollectionRepository` that caused the home page query to crash on modern MySQL servers. Session SQL mode is also set to `NO_ENGINE_SUBSTITUTION`.
-2. **Automatic Self-Healing Database Initialization:**  
-   `Database::getConnection()` now automatically checks if the `archive_items` and `users` tables exist. If the database is fresh/empty, it automatically creates all 11 tables and populates authentic seed records on the first request!
-3. **Safe Session & CORS Handling:**  
+3. **Automatic Self-Healing Database Initialization:**  
+   `Database::getConnection()` automatically checks if the `archive_items` and `users` tables exist. If the database is fresh/empty, it automatically creates all 11 tables and populates authentic seed records on the very first request!
+4. **Safe Session & CORS Handling:**  
    Session initiation is wrapped with headers-sent and exception guards so shared hosting configurations never crash during login.
-4. **Transparent Diagnostics:**  
+5. **Transparent Diagnostics:**  
    Global exception handling outputs clear error diagnostics if a database connection issue occurs.
 
 ---
@@ -46,7 +48,7 @@ You can use either **cPanel File Manager** or **FTP (FileZilla)**:
    - `api/` (folder)
    - `install.php`
    - `test-db.php`
-   - `if0_43194312_hackclt26.sql`
+   - `if0_43194312_hackcult26.sql`
 
 *(Tip: You can also upload `deploy.zip` into `htdocs/` and click **Extract**).*
 
@@ -63,7 +65,7 @@ Thanks to the self-healing database initialization, when you open the site for t
 
 To verify manually:
 1. **Verify Database Connectivity:**  
-   Visit **`http://hackcult26.gt.tc/test-db.php`** — you should see a green badge showing all 11 tables and record counts.
+   Visit **`http://hackcult26.gt.tc/test-db.php`** — you should see a green badge showing all 11 tables and record counts for `if0_43194312_hackcult26`.
 2. **Optional 1-Click Installer:**  
    Visit **`http://hackcult26.gt.tc/install.php`** if you wish to run a manual migration or re-seed.
 3. **Verify API Health:**  
@@ -92,5 +94,5 @@ The database comes pre-seeded with 4 role-based user accounts:
 |---|---|---|---|
 | **Researcher** | `researcher@virasat.org` | `password123` | Ingestion workspace, draft creation, media upload, OCR assistant |
 | **Reviewer** | `reviewer@virasat.org` | `password123` | Review queue, approve/reject workflow, collections curation |
-| **Admin** | `admin@virasat.org` | `password123` | Platform governance, user roles, system audit log, OAIS manifest export |
+| **Admin** | `admin@virasat.org` | `password123` | Governance dashboard (`/admin`), audit logs, OAIS manifest export |
 | **Visitor** | `visitor@virasat.org` | `password123` | Public catalogue, map view, collections, multilingual toggles |
