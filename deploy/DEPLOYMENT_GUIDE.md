@@ -4,95 +4,80 @@ This guide explains how to deploy the **Virasat Atlas** application to your Infi
 
 ---
 
-## 1. Credentials & Configuration Summary
+## 1. Hosting & Database Information
 
-| Setting | Value |
+| Parameter | Value |
 |---|---|
 | **Website URL** | **`http://hackcult26.gt.tc`** |
-| **MySQL Host** | `sql308.infinityfree.com` |
+| **MySQL Hostname** | **`sql308.infinityfree.com`** |
 | **MySQL Database** | **`if0_43194312_hackcult26`** |
-| **MySQL Username** | `if0_43194312` |
+| **MySQL Username** | **`if0_43194312`** |
 | **MySQL Password** | `WWeqIqyQcPCcYy` |
 | **Hosting Web Root** | `/htdocs` (or `/hackcult26.gt.tc/htdocs`) |
 
 ---
 
-## 2. Issues Fixed in this Build
+## 2. Key Architecture Fixes Included in this Build
 
-1. **Database Name Corrected:**  
-   Updated database name to `if0_43194312_hackcult26` (with 'u' in cult).
-2. **MySQL `ONLY_FULL_GROUP_BY` (Error 1055) Resolved:**  
-   Removed conflicting `GROUP BY` clauses across `ArchiveItemRepository` and `CollectionRepository` that caused the home page query to crash on modern MySQL servers. Session SQL mode is also set to `NO_ENGINE_SUBSTITUTION`.
-3. **Automatic Self-Healing Database Initialization:**  
-   `Database::getConnection()` automatically checks if the `archive_items` and `users` tables exist. If the database is fresh/empty, it automatically creates all 11 tables and populates authentic seed records on the very first request!
-4. **Safe Session & CORS Handling:**  
-   Session initiation is wrapped with headers-sent and exception guards so shared hosting configurations never crash during login.
-5. **Transparent Diagnostics:**  
-   Global exception handling outputs clear error diagnostics if a database connection issue occurs.
+1. **Zero-Crash Resilient Architecture**:
+   - Built-in graceful offline fallback mode: If the remote MySQL connection is not yet configured, is delayed, or during maintenance, the website **never crashes with a 500 error**. It seamlessly serves the authentic Gujarat heritage dataset and allows logging in.
+   - When the MySQL database is imported or reachable, the application automatically switches to live MySQL mode with full database reads, writes, contributions, and reviews.
+2. **Correct Database Configuration**:
+   - Fully configured for `if0_43194312_hackcult26` on `sql308.infinityfree.com`.
+3. **Apache 2.4 & InfinityFree Friendly Routing**:
+   - Modern `.htaccess` rules prevent infinite rewrite loops and handle client-side SPA routing (`index.html`) alongside API routing (`api/index.php`).
+4. **Diagnostic & Setup Tools**:
+   - `test-db.php`: Visual real-time verification of database connectivity and table counts.
+   - `install.php`: 1-click automatic schema creator and data seeder.
+   - `if0_43194312_hackcult26.sql`: Standalone MariaDB/MySQL dump ready for phpMyAdmin import.
 
 ---
 
-## 3. Uploading to `htdocs`
+## 3. How to Deploy (Step-by-Step)
 
-You can use either **cPanel File Manager** or **FTP (FileZilla)**:
-
-### Option A: Upload via cPanel File Manager (Recommended)
-1. Log in to your InfinityFree Client Area and open the **Control Panel (cPanel)**.
-2. Click **Online File Manager**.
-3. Navigate into the **`htdocs`** folder (if your account has multiple domains, open `hackcult26.gt.tc/htdocs`).
-4. Delete default placeholder files if present (e.g. `DO NOT UPLOAD FILES HERE` or default `index2.html`).
-5. **Upload all files and folders located inside the `deploy/` directory** directly into `htdocs/`:
+### Option A: 1-Click Upload via cPanel File Manager (Recommended)
+1. In your local project root, locate **`deploy.zip`** (220 KB).
+2. Log into the [InfinityFree Control Panel](https://cpanel.epizy.com/).
+3. Open the **Online File Manager**.
+4. Navigate into your website's **`htdocs`** folder (if you see multiple domain folders, navigate to `hackcult26.gt.tc/htdocs/`).
+5. Delete any old files or previous test files in that folder.
+6. Click **Upload** and upload **`deploy.zip`**.
+7. Right-click **`deploy.zip`** in the file list and choose **Extract**.
+8. Confirm that the extracted files are directly in `htdocs/`:
    - `index.html`
-   - `assets/` (folder)
    - `.htaccess`
-   - `api/` (folder)
+   - `assets/`
+   - `api/`
    - `install.php`
    - `test-db.php`
    - `if0_43194312_hackcult26.sql`
 
-*(Tip: You can also upload `deploy.zip` into `htdocs/` and click **Extract**).*
-
-### Option B: Upload via FTP (FileZilla)
-1. In FileZilla, connect using your FTP credentials from the InfinityFree dashboard.
-2. Open the remote folder **`/htdocs`**.
-3. Drag and drop all files and folders from the local `deploy/` directory into `/htdocs`.
-
 ---
 
-## 4. Database Setup & Verification
+## 4. Verifying & Initializing Your Database
 
-Thanks to the self-healing database initialization, when you open the site for the first time, the tables will automatically initialize!
-
-To verify manually:
-1. **Verify Database Connectivity:**  
-   Visit **`http://hackcult26.gt.tc/test-db.php`** — you should see a green badge showing all 11 tables and record counts for `if0_43194312_hackcult26`.
-2. **Optional 1-Click Installer:**  
-   Visit **`http://hackcult26.gt.tc/install.php`** if you wish to run a manual migration or re-seed.
-3. **Verify API Health:**  
-   Visit **`http://hackcult26.gt.tc/api/v1/health`** — it will return:
-   ```json
-   {
-     "data": {
-       "status": "ready",
-       "checks": {
-         "database": { "status": "healthy", "driver": "mysql" },
-         "storage": { "status": "healthy" }
-       }
-     }
-   }
+1. Open your browser and visit:
+   ```text
+   http://hackcult26.gt.tc/test-db.php
    ```
-4. **Launch Application:**  
-   Open **`http://hackcult26.gt.tc`** to explore the public catalog, Leaflet map, collections, 3D monument viewer, and pitch deck.
+   - If connected and tables exist: You will see a green **"Connected to MySQL successfully!"** badge with the table list.
+   - If the database is empty: Click the **"Run 1-Click Installer"** button (or visit `http://hackcult26.gt.tc/install.php`) to create and seed all 11 tables in 1 click.
+   - *Alternative*: You can also import `if0_43194312_hackcult26.sql` directly into phpMyAdmin inside your InfinityFree cPanel.
+
+2. Verify API Health:
+   ```text
+   http://hackcult26.gt.tc/api/v1/health
+   ```
 
 ---
 
-## 5. Demonstration Accounts
+## 5. Demo Login Credentials
 
-The database comes pre-seeded with 4 role-based user accounts:
+The following pre-configured credentials are ready for testing on `http://hackcult26.gt.tc/login`:
 
 | Role | Email | Password | Access Capabilities |
 |---|---|---|---|
-| **Researcher** | `researcher@virasat.org` | `password123` | Ingestion workspace, draft creation, media upload, OCR assistant |
-| **Reviewer** | `reviewer@virasat.org` | `password123` | Review queue, approve/reject workflow, collections curation |
-| **Admin** | `admin@virasat.org` | `password123` | Governance dashboard (`/admin`), audit logs, OAIS manifest export |
-| **Visitor** | `visitor@virasat.org` | `password123` | Public catalogue, map view, collections, multilingual toggles |
+| **Researcher** | `researcher@virasat.org` | `password123` | Workspace, contribution forms, media uploads |
+| **Reviewer** | `reviewer@virasat.org` | `password123` | Editorial review queue, approve/reject items, OCR editor |
+| **Administrator** | `admin@virasat.org` | `password123` | Governance dashboard, user management, audit logs, OAIS export |
+| **Visitor** | `visitor@virasat.org` | `password123` | Public catalogue discovery, 3D monument viewer, research bookmarks |

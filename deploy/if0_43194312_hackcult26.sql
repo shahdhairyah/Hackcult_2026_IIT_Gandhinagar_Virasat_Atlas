@@ -47,6 +47,9 @@ INSERT INTO `archive_item_tags` VALUES
 (2,2),
 (3,2),
 (4,2),
+(7,2),
+(8,2),
+(9,2),
 (1,3),
 (3,3),
 (5,3),
@@ -56,6 +59,9 @@ INSERT INTO `archive_item_tags` VALUES
 (3,5),
 (5,6),
 (4,7),
+(7,7),
+(8,7),
+(9,7),
 (6,8);
 /*!40000 ALTER TABLE `archive_item_tags` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -105,7 +111,7 @@ CREATE TABLE `archive_items` (
   CONSTRAINT `fk_archive_items_author` FOREIGN KEY (`submitted_by`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_archive_items_location` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_archive_items_reviewer` FOREIGN KEY (`reviewed_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,7 +127,10 @@ INSERT INTO `archive_items` VALUES
 (3,'Surya Kund and Sabha Mandapa of the Modhera Sun Temple','monument','Stepped geometric reservoir featuring 108 miniature shrines facing the 11th-century assembly hall.','Constructed after 1026-27 CE by King Bhimadeva I of the Solanki dynasty. The Surya Kund is an intricately stepped water tank featuring miniature shrines dedicated to Vishnu, Ganesha, and manifestations of Shiva. The alignment allows equinoctial sunrise rays to pass through the pillared assembly hall into the sanctum.',3,'Mehsana',23.5836000,72.1332000,'2026-01-20','Early 11th Century CE (c. 1026 CE)','English','Prof. Rajesh Verma','Western India Architectural Heritage Archive','public_domain','Source material placed in Public Domain by Western India Architectural Archive.','published','public',NULL,3,2,'2026-01-25 03:30:00','2026-11-01 10:56:58','2026-11-01 10:56:58'),
 (4,'Field Survey Notebook: Hydraulic Gradient Observations at Mehsana Stepwells','field_note','Original notebook records measuring seasonal water table elevations and decorative frieze weathering.','Field observations recorded between November 2025 and January 2026 documenting six secondary stepwells in Mehsana and Patan districts. Includes notes on salinity ingress, micro-cracks in frieze layers, and local folklore surrounding dry subterranean wells.',3,'Mehsana',23.5836000,72.1332000,'2026-03-01','Contemporary Fieldwork (2025-2026)','English','Aarav Patel','IITGN Field Survey Log #04','permission_granted','Field notes recorded by Aarav Patel; publication approved for research use.','draft','private',NULL,3,NULL,NULL,'2026-11-01 10:56:58','2026-11-01 10:56:58'),
 (5,'Sanskrit and Gujarati Inscription Plate from Patan Stepwell Shaft','document','Epigraphic scan documenting dedication verses and mason guild marks in Devanagari script.','High-resolution surface impression and digital scan of a bilingual dedication tablet. Records references to donor lineages, the architect overseer (Sutradhara), and astrological dates commemorating the water blessing ceremony.',1,'Patan',23.8589000,72.1018000,'2026-02-15','13th Century CE','Sanskrit','Epigraphy Department, State Archaeology','Archive Registration #EPI-2026-09','permission_pending','Scanned with permission of State Epigraphy Unit; rights review in progress.','pending_review','unlisted',NULL,3,NULL,NULL,'2026-11-01 10:56:58','2026-11-01 10:56:58'),
-(6,'Double-Ikat Silk Weaving Archive: Master Weaver Silk Chart','craft','Technical diagram illustrating warp and weft tie-dye mathematical calculations for traditional Patola motifs.','The Salvi community preserved the geometric double-ikat technique in Patan since the 12th century under the patronage of King Kumarapala. This archive record captures the graph-paper master charts (naqsha) used to align naturally dyed resist patterns before loom mounting.',1,'Patan',23.8589000,72.1018000,'2025-11-28','Heritage Living Craft Tradition','Gujarati','Salvi Artisan Guild & Cultural Documentation Team','Patan Living Heritage Project','cc_by','Documented with the consent of the Salvi Artisan Guild; licensed under CC-BY 4.0.','published','public',NULL,3,2,'2025-12-05 05:30:00','2026-11-01 10:56:58','2026-11-01 10:56:58');
+(6,'Double-Ikat Silk Weaving Archive: Master Weaver Silk Chart','craft','Technical diagram illustrating warp and weft tie-dye mathematical calculations for traditional Patola motifs.','The Salvi community preserved the geometric double-ikat technique in Patan since the 12th century under the patronage of King Kumarapala. This archive record captures the graph-paper master charts (naqsha) used to align naturally dyed resist patterns before loom mounting.',1,'Patan',23.8589000,72.1018000,'2025-11-28','Heritage Living Craft Tradition','Gujarati','Salvi Artisan Guild & Cultural Documentation Team','Patan Living Heritage Project','cc_by','Documented with the consent of the Salvi Artisan Guild; licensed under CC-BY 4.0.','published','public',NULL,3,2,'2025-12-05 05:30:00','2026-11-01 10:56:58','2026-11-01 10:56:58'),
+(7,'Harappan Brick Canal and Sluice Gate Survey #5121','field_note','Technical field observations of kiln-fired mudbrick sluices at Lothal.','Subterranean canal network measuring hydraulic pressure gradients.',NULL,'Ahmedabad',22.5218000,72.2494000,NULL,NULL,'English',NULL,'IITGN Coastal Survey Log #12','cc_by','Field photo documented by Aarav Patel, CC-BY 4.0','published','public',NULL,3,2,'2026-11-01 10:59:11','2026-11-01 10:59:11','2026-11-01 10:59:11'),
+(8,'Harappan Brick Canal and Sluice Gate Survey #8865','field_note','Technical field observations of kiln-fired mudbrick sluices at Lothal.','Subterranean canal network measuring hydraulic pressure gradients.',NULL,'Ahmedabad',22.5218000,72.2494000,NULL,NULL,'English',NULL,'IITGN Coastal Survey Log #12','cc_by','Field photo documented by Aarav Patel, CC-BY 4.0','published','public',NULL,3,2,'2026-11-01 11:38:57','2026-11-01 11:38:57','2026-11-01 11:38:57'),
+(9,'Harappan Brick Canal and Sluice Gate Survey #3131','field_note','Technical field observations of kiln-fired mudbrick sluices at Lothal.','Subterranean canal network measuring hydraulic pressure gradients.',NULL,'Ahmedabad',22.5218000,72.2494000,NULL,NULL,'English',NULL,'IITGN Coastal Survey Log #12','cc_by','Field photo documented by Aarav Patel, CC-BY 4.0','published','public',NULL,3,2,'2026-11-01 11:39:24','2026-11-01 11:39:24','2026-11-01 11:39:24');
 /*!40000 ALTER TABLE `archive_items` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -148,7 +157,7 @@ CREATE TABLE `audit_logs` (
   KEY `idx_audit_entity` (`entity_type`,`entity_id`),
   KEY `idx_audit_action` (`action`),
   CONSTRAINT `fk_audit_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,7 +168,36 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `audit_logs` WRITE;
 /*!40000 ALTER TABLE `audit_logs` DISABLE KEYS */;
 INSERT INTO `audit_logs` VALUES
-(1,1,'system_seed','system',1,'{\"message\":\"Initial database seed completed for Virasat Atlas.\"}',NULL,'2026-11-01 10:56:58');
+(1,1,'system_seed','system',1,'{\"message\":\"Initial database seed completed for Virasat Atlas.\"}',NULL,'2026-11-01 10:56:58'),
+(2,3,'user_login','user',3,NULL,'127.0.0.1','2026-11-01 10:59:11'),
+(3,3,'item_created_draft','archive_item',7,'{\"title\":\"Harappan Brick Canal and Sluice Gate Survey #5121\"}','127.0.0.1','2026-11-01 10:59:11'),
+(4,3,'media_uploaded','media_asset',6,'{\"item_id\":7,\"filename\":\"sluice.svg\"}','127.0.0.1','2026-11-01 10:59:11'),
+(5,3,'item_updated','archive_item',7,'{\"title\":\"Harappan Brick Canal and Sluice Gate Survey #5121\"}','127.0.0.1','2026-11-01 10:59:11'),
+(6,2,'user_login','user',2,NULL,'127.0.0.1','2026-11-01 10:59:11'),
+(7,2,'item_approved','archive_item',7,'{\"action\":\"approve\",\"reason\":\"\"}','127.0.0.1','2026-11-01 10:59:11'),
+(8,3,'ocr_job_created','ocr_job',1,'{\"item_id\":7,\"language\":\"eng\"}','127.0.0.1','2026-11-01 10:59:11'),
+(9,3,'ocr_transcript_reviewed','ocr_job',1,'{\"item_id\":7}','127.0.0.1','2026-11-01 10:59:11'),
+(10,1,'user_login','user',1,NULL,'127.0.0.1','2026-11-01 10:59:12'),
+(11,3,'user_login','user',3,NULL,NULL,'2026-11-01 11:29:13'),
+(12,3,'user_login','user',3,NULL,NULL,'2026-11-01 11:37:04'),
+(13,3,'user_login','user',3,NULL,'127.0.0.1','2026-11-01 11:38:57'),
+(14,3,'item_created_draft','archive_item',8,'{\"title\":\"Harappan Brick Canal and Sluice Gate Survey #8865\"}','127.0.0.1','2026-11-01 11:38:57'),
+(15,3,'media_uploaded','media_asset',7,'{\"item_id\":8,\"filename\":\"sluice.svg\"}','127.0.0.1','2026-11-01 11:38:57'),
+(16,3,'item_updated','archive_item',8,'{\"title\":\"Harappan Brick Canal and Sluice Gate Survey #8865\"}','127.0.0.1','2026-11-01 11:38:57'),
+(17,2,'user_login','user',2,NULL,'127.0.0.1','2026-11-01 11:38:57'),
+(18,2,'item_approved','archive_item',8,'{\"action\":\"approve\",\"reason\":\"\"}','127.0.0.1','2026-11-01 11:38:57'),
+(19,3,'ocr_job_created','ocr_job',2,'{\"item_id\":8,\"language\":\"eng\"}','127.0.0.1','2026-11-01 11:38:57'),
+(20,3,'ocr_transcript_reviewed','ocr_job',2,'{\"item_id\":8}','127.0.0.1','2026-11-01 11:38:57'),
+(21,3,'user_login','user',3,NULL,'127.0.0.1','2026-11-01 11:39:24'),
+(22,3,'item_created_draft','archive_item',9,'{\"title\":\"Harappan Brick Canal and Sluice Gate Survey #3131\"}','127.0.0.1','2026-11-01 11:39:24'),
+(23,3,'media_uploaded','media_asset',8,'{\"item_id\":9,\"filename\":\"sluice.svg\"}','127.0.0.1','2026-11-01 11:39:24'),
+(24,3,'item_updated','archive_item',9,'{\"title\":\"Harappan Brick Canal and Sluice Gate Survey #3131\"}','127.0.0.1','2026-11-01 11:39:24'),
+(25,2,'user_login','user',2,NULL,'127.0.0.1','2026-11-01 11:39:24'),
+(26,2,'item_approved','archive_item',9,'{\"action\":\"approve\",\"reason\":\"\"}','127.0.0.1','2026-11-01 11:39:24'),
+(27,3,'ocr_job_created','ocr_job',3,'{\"item_id\":9,\"language\":\"eng\"}','127.0.0.1','2026-11-01 11:39:24'),
+(28,3,'ocr_transcript_reviewed','ocr_job',3,'{\"item_id\":9}','127.0.0.1','2026-11-01 11:39:24'),
+(29,1,'user_login','user',1,NULL,'127.0.0.1','2026-11-01 11:39:24'),
+(30,3,'user_login','user',3,NULL,NULL,'2026-11-01 11:39:52');
 /*!40000 ALTER TABLE `audit_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -305,7 +343,7 @@ CREATE TABLE `media_assets` (
   PRIMARY KEY (`id`),
   KEY `idx_media_item_primary` (`archive_item_id`,`is_primary`),
   CONSTRAINT `fk_media_archive_item` FOREIGN KEY (`archive_item_id`) REFERENCES `archive_items` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -320,7 +358,10 @@ INSERT INTO `media_assets` VALUES
 (2,2,'8c56e87b461ef0e488f2b731b5a67e2b.svg','adalaj_stepwell_octagonal.svg','image/svg+xml',682,'844a13e42334e1922041bf9d4b64be876538d74d065c45dc574b7dfa4e69c61c','Pillared octagonal corridors of Adalaj Vav','Shaft corridors showing Solanki stone friezes and light shafts.',1,'2026-11-01 10:56:58'),
 (3,3,'2fbfd09eca63cc94814105eccd0164ba.svg','modhera_surya_kund.svg','image/svg+xml',681,'9c0cb70f7430df14b51f2ff1aeee4222e0f33f5331c0db03ad28b105a8ccc3b6','Stepped geometric reservoir of Surya Kund Modhera','Miniature shrines framing the ceremonial stepped water body.',1,'2026-11-01 10:56:58'),
 (4,5,'55ae629ad5823c4d63d83c134c516dc2.svg','patan_inscription_plate.svg','image/svg+xml',686,'b10aed74b826a79edff9bc7c3da3435f8e0fe02296b4a87f2b3f5bf58d3cecb3','High resolution scan of epigraphic dedication tablet','Bilingual Sanskrit-Gujarati stone inscription rubric.',1,'2026-11-01 10:56:58'),
-(5,6,'b78f62c27774f7d7fe89629530267848.svg','patola_weaving_chart.svg','image/svg+xml',682,'49c2acd9b36582cd3ba7a07245da1b32bb5eb8ed2f751a8bfa0b372c737784ef','Double ikat weaving geometric layout graph','Artisan graph chart indicating red and gold silk thread alignments.',1,'2026-11-01 10:56:58');
+(5,6,'b78f62c27774f7d7fe89629530267848.svg','patola_weaving_chart.svg','image/svg+xml',682,'49c2acd9b36582cd3ba7a07245da1b32bb5eb8ed2f751a8bfa0b372c737784ef','Double ikat weaving geometric layout graph','Artisan graph chart indicating red and gold silk thread alignments.',1,'2026-11-01 10:56:58'),
+(6,7,'041fa544c88b327557bbe6d4a112eb8e.svg','sluice.svg','image/svg+xml',202,'f4cfc6193c3e1e47e48106c9e9d35a33e3f6c95f3094b46368350346bda388ea','Kiln fired Harappan mudbrick water sluice canal','Canal drainage conduit',1,'2026-11-01 10:59:11'),
+(7,8,'d2dad1c65f4344c316953732b29c6fb7.svg','sluice.svg','image/svg+xml',202,'f4cfc6193c3e1e47e48106c9e9d35a33e3f6c95f3094b46368350346bda388ea','Kiln fired Harappan mudbrick water sluice canal','Canal drainage conduit',1,'2026-11-01 11:38:57'),
+(8,9,'a4af1bc3a65bb30a82481e2e436474c4.svg','sluice.svg','image/svg+xml',202,'f4cfc6193c3e1e47e48106c9e9d35a33e3f6c95f3094b46368350346bda388ea','Kiln fired Harappan mudbrick water sluice canal','Canal drainage conduit',1,'2026-11-01 11:39:24');
 /*!40000 ALTER TABLE `media_assets` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -353,7 +394,7 @@ CREATE TABLE `ocr_jobs` (
   CONSTRAINT `fk_ocr_archive_item` FOREIGN KEY (`archive_item_id`) REFERENCES `archive_items` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_ocr_media_asset` FOREIGN KEY (`media_asset_id`) REFERENCES `media_assets` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_ocr_reviewer` FOREIGN KEY (`reviewed_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -363,6 +404,10 @@ CREATE TABLE `ocr_jobs` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `ocr_jobs` WRITE;
 /*!40000 ALTER TABLE `ocr_jobs` DISABLE KEYS */;
+INSERT INTO `ocr_jobs` VALUES
+(1,7,NULL,'eng','tesseract','Survey Note: Mehsana Station #04\nDate: 14 Dec 2025. Ambient temp 28C.\nWater level at tier 4 observed at -12.4m datum.\nMason marks: 3 distinct guild sigils noted on octagonal pillar frieze.\n[Illegible word: s-l-t-y] deposit observed along base plinth.','Epigraphically verified transcript: Lothal tidal sluice gate alignment and Harappan mudbrick water conduit.',0.87,'reviewed',3,'2026-11-01 10:59:11','2026-11-01 10:59:11'),
+(2,8,NULL,'eng','tesseract','Survey Note: Mehsana Station #04\nDate: 14 Dec 2025. Ambient temp 28C.\nWater level at tier 4 observed at -12.4m datum.\nMason marks: 3 distinct guild sigils noted on octagonal pillar frieze.\n[Illegible word: s-l-t-y] deposit observed along base plinth.','Epigraphically verified transcript: Lothal tidal sluice gate alignment and Harappan mudbrick water conduit.',0.87,'reviewed',3,'2026-11-01 11:38:57','2026-11-01 11:38:57'),
+(3,9,NULL,'eng','tesseract','Survey Note: Mehsana Station #04\nDate: 14 Dec 2025. Ambient temp 28C.\nWater level at tier 4 observed at -12.4m datum.\nMason marks: 3 distinct guild sigils noted on octagonal pillar frieze.\n[Illegible word: s-l-t-y] deposit observed along base plinth.','Epigraphically verified transcript: Lothal tidal sluice gate alignment and Harappan mudbrick water conduit.',0.87,'reviewed',3,'2026-11-01 11:39:24','2026-11-01 11:39:24');
 /*!40000 ALTER TABLE `ocr_jobs` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -385,7 +430,7 @@ CREATE TABLE `saved_items` (
   KEY `fk_saved_item` (`archive_item_id`),
   CONSTRAINT `fk_saved_item` FOREIGN KEY (`archive_item_id`) REFERENCES `archive_items` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_saved_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -396,7 +441,7 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `saved_items` WRITE;
 /*!40000 ALTER TABLE `saved_items` DISABLE KEYS */;
 INSERT INTO `saved_items` VALUES
-(9,3,1,'2026-11-01 10:48:59');
+(11,3,1,'2026-11-01 11:39:24');
 /*!40000 ALTER TABLE `saved_items` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -489,4 +534,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-11-01 16:26:58
+-- Dump completed on 2026-11-01 17:11:02

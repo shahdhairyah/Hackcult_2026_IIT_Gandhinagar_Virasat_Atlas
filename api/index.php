@@ -43,7 +43,7 @@ Env::load(__DIR__ . '/.env');
 // 2. Global CORS handling
 CorsMiddleware::handle();
 
-// 3. Global Exception Handler
+// 3. Global Exception & Fatal Error Handlers
 set_exception_handler(function (Throwable $e) {
     error_log('Unhandled exception: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
     JsonResponse::error($e->getMessage(), 'SERVER_ERROR', 500, [
@@ -52,13 +52,34 @@ set_exception_handler(function (Throwable $e) {
     ]);
 });
 
+register_shutdown_function(function () {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: application/json; charset=UTF-8');
+            echo json_encode([
+                'data' => null,
+                'error' => [
+                    'code' => 'FATAL_PHP_ERROR',
+                    'message' => $error['message'],
+                    'file' => basename($error['file']),
+                    'line' => $error['line']
+                ]
+            ], JSON_UNESCAPED_SLASHES);
+        }
+    }
+});
+
 // 4. Request parsing
 $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-$requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$rawUri = $_SERVER['REQUEST_URI'] ?? $_SERVER['REDIRECT_URL'] ?? '/';
+$requestUri = parse_url($rawUri, PHP_URL_PATH) ?? '/';
 
-// Normalize route (strip trailing slash and project directory prefix if needed)
-$uri = rtrim($requestUri, '/');
-$uri = str_replace('/index.php', '', $uri);
+// Normalize route (strip script name and trailing slash)
+$uri = preg_replace('#^.*?/api/index\.php#', '/api', $requestUri);
+$uri = preg_replace('#^.*?/index\.php#', '', $uri);
+$uri = rtrim($uri, '/');
 if ($uri === '') {
     $uri = '/';
 }

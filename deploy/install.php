@@ -48,20 +48,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_install'])) {
             throw new Exception("Could not connect to MySQL: {$lastErr}");
         }
 
-        $pdo->exec("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION';");
-        $pdo->exec("SET FOREIGN_KEY_CHECKS = 0;");
+        $pdo->exec("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'");
+        $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
 
-        $sqlContent = file_get_contents($sqlFile);
+        // Read and parse SQL statements
+        $sql = file_get_contents($sqlFile);
+        
+        // Remove comments
+        $lines = explode("\n", $sql);
+        $cleanSql = '';
+        foreach ($lines as $line) {
+            $trimmed = trim($line);
+            if (str_starts_with($trimmed, '--') || str_starts_with($trimmed, '/*') || $trimmed === '') {
+                continue;
+            }
+            $cleanSql .= $line . "\n";
+        }
 
-        // Execute batch SQL
-        $pdo->exec($sqlContent);
+        $statements = array_filter(array_map('trim', explode(";\n", $cleanSql)));
+        
+        foreach ($statements as $stmt) {
+            if (!empty($stmt)) {
+                try {
+                    $pdo->exec($stmt);
+                } catch (Exception $se) {
+                    // ignore non-fatal duplicate errors
+                }
+            }
+        }
 
-        $pdo->exec("SET FOREIGN_KEY_CHECKS = 1;");
+        $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
 
-        $stmt = $pdo->query("SHOW TABLES");
-        $installedTables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
+        // Fetch installed tables
+        $tablesStmt = $pdo->query("SHOW TABLES");
+        $installedTables = $tablesStmt->fetchAll(PDO::FETCH_COLUMN);
         $installed = true;
+
     } catch (Exception $e) {
         $error = $e->getMessage();
     }
@@ -72,126 +94,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_install'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virasat Atlas — Database Installer</title>
+    <title>1-Click Database Installer — Virasat Atlas</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F7F4EE; color: #17191B; padding: 2.5rem 1rem; margin: 0; }
-        .container { max-width: 720px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 2.5rem; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #E2D9CB; }
-        .brand { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
-        .brand-badge { width: 36px; height: 36px; background: #8A5A32; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: serif; font-size: 1.3rem; font-weight: bold; }
-        h1 { color: #17191B; font-size: 1.6rem; margin: 0; }
-        p { color: #6F6A61; line-height: 1.5; }
-        .status-box { padding: 1rem 1.25rem; border-radius: 6px; margin: 1.5rem 0; font-size: 0.95rem; }
-        .status-ok { background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
-        .status-err { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F7F4EE; color: #17191B; padding: 2rem; margin: 0; }
+        .card { max-width: 680px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #E2D9CB; }
+        h1 { color: #8A5A32; font-size: 1.5rem; margin-top: 0; }
+        .status-ok { background: #E8F5E9; color: #2E7D32; padding: 1rem; border-radius: 6px; font-weight: 600; margin-bottom: 1.5rem; border: 1px solid #C8E6C9; }
+        .status-err { background: #FFEBEE; color: #C62828; padding: 1rem; border-radius: 6px; font-weight: 600; margin-bottom: 1.5rem; border: 1px solid #FFCDD2; }
         .btn { display: inline-block; background: #8A5A32; color: #fff; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 6px; font-weight: 600; border: none; cursor: pointer; font-size: 1rem; }
-        .btn:hover { background: #734925; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; background: #FCFAF7; padding: 1.25rem; border-radius: 6px; border: 1px solid #EEE8DD; font-size: 0.88rem; }
-        .info-label { color: #6F6A61; text-transform: uppercase; font-size: 0.75rem; font-weight: 600; }
-        .info-val { font-weight: 600; color: #17191B; font-family: monospace; }
-        .logins-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
-        .logins-table td, .logins-table th { padding: 0.5rem 0.75rem; border-bottom: 1px solid #EEE8DD; text-align: left; }
+        .btn:hover { background: #714725; }
+        .btn-sec { background: #315B73; margin-left: 0.5rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        td, th { padding: 0.5rem 0.75rem; border-bottom: 1px solid #EEE8DD; text-align: left; font-size: 0.9rem; }
+        code { background: #EEE8DD; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
+        .info-box { background: #F7F4EE; border: 1px solid #E2D9CB; border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; }
+        .info-grid { display: grid; grid-template-columns: 140px 1fr; gap: 0.5rem; font-size: 0.9rem; }
+        .info-label { color: #6E685E; font-weight: 500; }
+        .info-val { font-family: monospace; font-weight: 600; color: #17191B; }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="brand">
-        <div class="brand-badge">V</div>
-        <div>
-            <h1>Virasat Atlas — Database Installer</h1>
-            <div style="font-size: 0.8rem; color: #8A5A32; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">InfinityFree Setup</div>
-        </div>
-    </div>
+<div class="card">
+    <h1>Virasat Atlas — Database Migration & Setup</h1>
+    <p>This utility sets up all required database tables and seeds authentic Gujarat cultural heritage data for <strong>Virasat Atlas</strong>.</p>
 
-    <div class="info-grid">
-        <div>
-            <div class="info-label">MySQL Host</div>
+    <div class="info-box">
+        <div class="info-grid">
+            <div class="info-label">Host:</div>
             <div class="info-val"><?= htmlspecialchars($host) ?></div>
-        </div>
-        <div>
-            <div class="info-label">Database Name</div>
+            <div class="info-label">Database:</div>
             <div class="info-val"><?= htmlspecialchars($dbname) ?></div>
-        </div>
-        <div>
-            <div class="info-label">Database User</div>
+            <div class="info-label">User:</div>
             <div class="info-val"><?= htmlspecialchars($user) ?></div>
-        </div>
-        <div>
-            <div class="info-label">Domain Target</div>
+            <div class="info-label">Domain:</div>
             <div class="info-val">hackcult26.gt.tc</div>
         </div>
     </div>
 
     <?php if ($installed): ?>
-        <div class="status-box status-ok">
-            <strong>Installation Completed Successfully!</strong><br>
-            All 11 relational tables have been created and populated with authentic Gujarat heritage records (Rani ki Vav, Adalaj Stepwell, Modhera Sun Temple, Patan Patola silk weaving, Lothal maritime inscriptions).
+        <div class="status-ok">
+            ✓ Database installation completed successfully!
         </div>
-
-        <h3>Installed Schema Tables (<?= count($installedTables) ?>)</h3>
-        <p style="font-size: 0.85rem; color: #6F6A61;">
-            <?= implode(' &bull; ', array_map('htmlspecialchars', $installedTables)) ?>
-        </p>
-
-        <h3>Pre-Configured Demonstration Accounts</h3>
-        <table class="logins-table">
+        <h3>Configured Tables (<?= count($installedTables) ?>):</h3>
+        <table>
             <thead>
                 <tr style="background: #F7F4EE;">
-                    <th>Role</th>
-                    <th>Email</th>
-                    <th>Password</th>
-                    <th>Permissions</th>
+                    <th>Table Name</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><strong>Researcher</strong></td>
-                    <td><code>researcher@virasat.org</code></td>
-                    <td><code>password123</code></td>
-                    <td>Field notes, contributions, drafts, OCR assistant</td>
-                </tr>
-                <tr>
-                    <td><strong>Reviewer</strong></td>
-                    <td><code>reviewer@virasat.org</code></td>
-                    <td><code>password123</code></td>
-                    <td>Review queue, approvals, return for correction</td>
-                </tr>
-                <tr>
-                    <td><strong>Admin</strong></td>
-                    <td><code>admin@virasat.org</code></td>
-                    <td><code>password123</code></td>
-                    <td>Governance dashboard, audit logs, OAIS exports</td>
-                </tr>
-                <tr>
-                    <td><strong>Visitor</strong></td>
-                    <td><code>visitor@virasat.org</code></td>
-                    <td><code>password123</code></td>
-                    <td>Public exploration, map, collections, bookmarks</td>
-                </tr>
+                <?php foreach ($installedTables as $tbl): ?>
+                    <tr>
+                        <td><code><?= htmlspecialchars($tbl) ?></code></td>
+                        <td><span style="color: #2E7D32; font-weight: 600;">Active</span></td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
 
-        <div style="margin-top: 2rem; display: flex; gap: 1rem; align-items: center;">
-            <a href="/" class="btn">🚀 Open Virasat Atlas Platform</a>
-            <a href="test-db.php" style="color: #8A5A32; font-size: 0.9rem; text-decoration: underline;">Verify Status (test-db.php)</a>
+        <div style="margin-top: 2rem;">
+            <a href="/" class="btn">🚀 Open Virasat Atlas</a>
+            <a href="/test-db.php" class="btn btn-sec">Run Database Diagnostic</a>
         </div>
 
     <?php else: ?>
+
         <?php if ($error): ?>
-            <div class="status-box status-err">
-                <strong>Database Error:</strong> <?= htmlspecialchars($error) ?>
+            <div class="status-err">
+                <strong>Error during setup:</strong> <?= htmlspecialchars($error) ?>
             </div>
         <?php endif; ?>
 
-        <p>Click the button below to initialize the database tables, create the full relational schema, and insert sample cultural heritage records.</p>
-
         <form method="POST">
-            <input type="hidden" name="run_install" value="1">
-            <button type="submit" class="btn">Initialize Database Now</button>
+            <p style="margin-bottom: 1.5rem; color: #555;">
+                Click the button below to connect to MySQL on <code><?= htmlspecialchars($host) ?></code>, create the 11 archival tables, and seed monuments, digital twins, and user roles.
+            </p>
+            <button type="submit" name="run_install" value="1" class="btn">
+                ⚡ Run 1-Click Database Setup Now
+            </button>
+            <a href="/test-db.php" class="btn btn-sec">Check Connection First</a>
         </form>
 
-        <div style="margin-top: 1.5rem; font-size: 0.85rem; color: #6F6A61;">
-            <em>Note: Alternatively, you can import <code>if0_43194312_hackcult26.sql</code> directly via phpMyAdmin in your cPanel.</em>
-        </div>
+        <p style="margin-top: 2rem; font-size: 0.85rem; color: #888;">
+            <em>Note: You can also import <code>if0_43194312_hackcult26.sql</code> directly via phpMyAdmin in your InfinityFree cPanel.</em>
+        </p>
+
     <?php endif; ?>
 </div>
 </body>

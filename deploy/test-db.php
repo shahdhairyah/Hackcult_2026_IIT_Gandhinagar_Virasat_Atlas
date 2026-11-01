@@ -50,7 +50,7 @@ $pass = 'WWeqIqyQcPCcYy';
             $pdo = new PDO($dsn, $user, $pass, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_TIMEOUT => 10
+                PDO::ATTR_TIMEOUT => 5
             ]);
             break;
         } catch (Exception $e) {
@@ -60,16 +60,15 @@ $pass = 'WWeqIqyQcPCcYy';
 
     if ($pdo === null) {
         echo '<div class="status-err">Connection Failed: ' . htmlspecialchars($lastError) . '</div>';
-        echo '<p>Troubleshooting steps:</p>';
+        echo '<p><strong>Troubleshooting:</strong></p>';
         echo '<ul>';
-        echo '<li>Ensure your MySQL database <code>' . htmlspecialchars($dbname) . '</code> exists in InfinityFree cPanel.</li>';
-        echo '<li>Verify that the password matches your InfinityFree vPPanel account password.</li>';
-        echo '<li>Confirm that MySQL Hostname is <code>' . htmlspecialchars($host) . '</code>.</li>';
+        echo '<li>Ensure your MySQL database <code>' . htmlspecialchars($dbname) . '</code> was created in InfinityFree cPanel.</li>';
+        echo '<li>Verify that your password matches your InfinityFree account password.</li>';
+        echo '<li>Note: The application has built-in offline resiliency mode, so the site will still load even while MySQL connection is being configured!</li>';
         echo '</ul>';
     } else {
         echo '<div class="status-ok">Connected to MySQL successfully!</div>';
 
-        // Disable ONLY_FULL_GROUP_BY for current session
         try {
             $pdo->exec("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'");
         } catch (Exception $e) {}
