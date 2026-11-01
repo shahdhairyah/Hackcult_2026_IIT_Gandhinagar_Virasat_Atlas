@@ -9,17 +9,21 @@ class AuthMiddleware {
     private static ?array $currentUser = null;
 
     public static function startSession(): void {
-        if (session_status() === PHP_SESSION_NONE) {
-            $secure = filter_var(Env::get('SESSION_SECURE_COOKIE', false), FILTER_VALIDATE_BOOLEAN);
-            session_set_cookie_params([
-                'lifetime' => 86400 * 7,
-                'path' => '/',
-                'domain' => '',
-                'secure' => $secure,
-                'httponly' => true,
-                'samesite' => 'Lax'
-            ]);
-            session_start();
+        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+            try {
+                $secure = filter_var(Env::get('SESSION_SECURE_COOKIE', false), FILTER_VALIDATE_BOOLEAN);
+                @session_set_cookie_params([
+                    'lifetime' => 86400 * 7,
+                    'path' => '/',
+                    'domain' => '',
+                    'secure' => $secure,
+                    'httponly' => true,
+                    'samesite' => 'Lax'
+                ]);
+                @session_start();
+            } catch (\Throwable $e) {
+                @session_start();
+            }
         }
     }
 
@@ -39,7 +43,6 @@ class AuthMiddleware {
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
         if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
             $token = trim($matches[1]);
-            // Support base64 user session token
             $decoded = json_decode(base64_decode($token), true);
             if (is_array($decoded) && !empty($decoded['id'])) {
                 $user = UserRepository::findById((int)$decoded['id']);
@@ -62,14 +65,6 @@ class AuthMiddleware {
     }
 
     public static function user(): ?array {
-        if (self::$currentUser === null) {
-            self::authenticate();
-        }
-        return self::$currentUser;
-    }
-
-    public static function setUser(array $user): void {
-        self::$currentUser = $user;
+        return self::authenticate();
     }
 }
-

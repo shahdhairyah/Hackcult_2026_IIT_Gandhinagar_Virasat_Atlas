@@ -1,6 +1,6 @@
 # Virasat Atlas — InfinityFree Deployment Guide
 
-This guide describes how to deploy the **Virasat Atlas** application to your InfinityFree hosting at **`http://hackcult26.gt.tc`**.
+This guide explains how to deploy the **Virasat Atlas** application to your InfinityFree hosting at **`http://hackcult26.gt.tc`**.
 
 ---
 
@@ -8,18 +8,29 @@ This guide describes how to deploy the **Virasat Atlas** application to your Inf
 
 | Setting | Value |
 |---|---|
-| **Domain** | `http://hackcult26.gt.tc` |
+| **Website URL** | **`http://hackcult26.gt.tc`** |
 | **MySQL Host** | `sql308.infinityfree.com` |
 | **MySQL Database** | `if0_43194312_hackclt26` |
 | **MySQL Username** | `if0_43194312` |
 | **MySQL Password** | `WWeqIqyQcPCcYy` |
 | **Hosting Web Root** | `/htdocs` (or `/hackcult26.gt.tc/htdocs`) |
 
-All configuration files in this `deploy/` folder have already been pre-configured with these exact credentials.
+---
+
+## 2. Issues Fixed in this Build
+
+1. **MySQL `ONLY_FULL_GROUP_BY` (Error 1055) Resolved:**  
+   Removed conflicting `GROUP BY` clauses across `ArchiveItemRepository` and `CollectionRepository` that caused the home page query to crash on modern MySQL servers. Session SQL mode is also set to `NO_ENGINE_SUBSTITUTION`.
+2. **Automatic Self-Healing Database Initialization:**  
+   `Database::getConnection()` now automatically checks if the `archive_items` and `users` tables exist. If the database is fresh/empty, it automatically creates all 11 tables and populates authentic seed records on the first request!
+3. **Safe Session & CORS Handling:**  
+   Session initiation is wrapped with headers-sent and exception guards so shared hosting configurations never crash during login.
+4. **Transparent Diagnostics:**  
+   Global exception handling outputs clear error diagnostics if a database connection issue occurs.
 
 ---
 
-## 2. Uploading to `htdocs`
+## 3. Uploading to `htdocs`
 
 You can use either **cPanel File Manager** or **FTP (FileZilla)**:
 
@@ -27,8 +38,8 @@ You can use either **cPanel File Manager** or **FTP (FileZilla)**:
 1. Log in to your InfinityFree Client Area and open the **Control Panel (cPanel)**.
 2. Click **Online File Manager**.
 3. Navigate into the **`htdocs`** folder (if your account has multiple domains, open `hackcult26.gt.tc/htdocs`).
-4. Delete default placeholder files (e.g. `DO NOT UPLOAD FILES HERE` or default `index2.html` if present).
-5. Upload all files and folders located inside the `deploy/` directory:
+4. Delete default placeholder files if present (e.g. `DO NOT UPLOAD FILES HERE` or default `index2.html`).
+5. **Upload all files and folders located inside the `deploy/` directory** directly into `htdocs/`:
    - `index.html`
    - `assets/` (folder)
    - `.htaccess`
@@ -46,30 +57,17 @@ You can use either **cPanel File Manager** or **FTP (FileZilla)**:
 
 ---
 
-## 3. Database Initialization (1-Click)
+## 4. Database Setup & Verification
 
-Once files are uploaded, initialize the database using either method below:
+Thanks to the self-healing database initialization, when you open the site for the first time, the tables will automatically initialize!
 
-### Method 1: Web Installer (Fastest)
-1. Open your browser and visit:  
-   👉 **`http://hackcult26.gt.tc/install.php`**
-2. Click **"Initialize Database Now"**.
-3. The script will automatically connect to `sql308.infinityfree.com`, create all 11 tables, and populate authentic Gujarat heritage records (Rani ki Vav, Adalaj Stepwell, Modhera Sun Temple, Patan Patola silk weaving, etc.).
-
-### Method 2: phpMyAdmin Import
-1. In your InfinityFree cPanel, click **phpMyAdmin**.
-2. Select database **`if0_43194312_hackclt26`** in the left sidebar.
-3. Click the **Import** tab at the top.
-4. Choose the file **`if0_43194312_hackclt26.sql`** and click **Go**.
-
----
-
-## 4. Verification & Testing
-
+To verify manually:
 1. **Verify Database Connectivity:**  
-   Visit `http://hackcult26.gt.tc/test-db.php` — you should see a green badge showing all 11 tables and record counts.
-2. **Verify PHP REST API:**  
-   Visit `http://hackcult26.gt.tc/api/v1/health` — it should return:
+   Visit **`http://hackcult26.gt.tc/test-db.php`** — you should see a green badge showing all 11 tables and record counts.
+2. **Optional 1-Click Installer:**  
+   Visit **`http://hackcult26.gt.tc/install.php`** if you wish to run a manual migration or re-seed.
+3. **Verify API Health:**  
+   Visit **`http://hackcult26.gt.tc/api/v1/health`** — it will return:
    ```json
    {
      "data": {
@@ -81,8 +79,8 @@ Once files are uploaded, initialize the database using either method below:
      }
    }
    ```
-3. **Launch the Public Application:**  
-   Visit **`http://hackcult26.gt.tc`** to explore the public catalog, interactive Leaflet map, 3D digital twin monument viewer, and pitch presentation!
+4. **Launch Application:**  
+   Open **`http://hackcult26.gt.tc`** to explore the public catalog, Leaflet map, collections, 3D monument viewer, and pitch deck.
 
 ---
 

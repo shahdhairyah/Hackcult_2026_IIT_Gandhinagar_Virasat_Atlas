@@ -97,7 +97,6 @@ class ArchiveItemRepository {
                 LEFT JOIN locations l ON l.id = ai.location_id
                 LEFT JOIN media_assets m ON m.archive_item_id = ai.id AND m.is_primary = 1
                 {$whereClause}
-                GROUP BY ai.id
                 ORDER BY {$orderBy}
                 LIMIT {$perPage} OFFSET {$offset}";
 
@@ -180,7 +179,6 @@ class ArchiveItemRepository {
                 LEFT JOIN locations l ON l.id = ai.location_id
                 LEFT JOIN media_assets m ON m.archive_item_id = ai.id AND m.is_primary = 1
                 WHERE ai.submitted_by = ?
-                GROUP BY ai.id
                 ORDER BY ai.updated_at DESC";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$userId]);
@@ -223,7 +221,6 @@ class ArchiveItemRepository {
                 LEFT JOIN users u ON u.id = ai.submitted_by
                 LEFT JOIN media_assets m ON m.archive_item_id = ai.id AND m.is_primary = 1
                 WHERE ai.status = 'pending_review'
-                GROUP BY ai.id
                 ORDER BY ai.created_at ASC";
         $stmt = $pdo->query($sql);
         return $stmt->fetchAll();
@@ -337,7 +334,6 @@ class ArchiveItemRepository {
                       AND ai.status = 'published' 
                       AND ai.visibility = 'public'
                       AND ait.tag_id IN ($inClause)
-                    GROUP BY ai.id
                     LIMIT 4";
             $bindings = array_merge([$id], $tagIds);
             $stmt = $pdo->prepare($sql);
@@ -357,7 +353,6 @@ class ArchiveItemRepository {
                   AND ai.status = 'published' 
                   AND ai.visibility = 'public'
                   AND ai.region = ?
-                GROUP BY ai.id
                 LIMIT 4";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$id, $item['region']]);

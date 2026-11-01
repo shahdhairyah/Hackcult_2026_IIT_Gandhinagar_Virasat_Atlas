@@ -16,7 +16,6 @@ $sqlFile = __DIR__ . '/if0_43194312_hackclt26.sql';
 
 $installed = false;
 $error = null;
-$executedStatements = 0;
 $installedTables = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_install'])) {
@@ -25,16 +24,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_install'])) {
             throw new Exception("SQL dump file not found: {$sqlFile}");
         }
 
-        $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
-        $pdo = new PDO($dsn, $user, $pass, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_TIMEOUT => 20
-        ]);
+        $dsns = [
+            "mysql:host={$host};dbname={$dbname};charset=utf8mb4",
+            "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4",
+            "mysql:host={$host};dbname={$dbname}"
+        ];
+
+        $pdo = null;
+        $lastErr = null;
+        foreach ($dsns as $dsn) {
+            try {
+                $pdo = new PDO($dsn, $user, $pass, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_TIMEOUT => 20
+                ]);
+                break;
+            } catch (Exception $e) {
+                $lastErr = $e->getMessage();
+            }
+        }
+
+        if ($pdo === null) {
+            throw new Exception("Could not connect to MySQL: {$lastErr}");
+        }
+
+        $pdo->exec("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION';");
+        $pdo->exec("SET FOREIGN_KEY_CHECKS = 0;");
 
         $sqlContent = file_get_contents($sqlFile);
-
-        // Split SQL statements cleanly
-        $pdo->exec("SET FOREIGN_KEY_CHECKS = 0;");
 
         // Execute batch SQL
         $pdo->exec($sqlContent);

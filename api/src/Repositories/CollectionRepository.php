@@ -7,12 +7,13 @@ use PDO;
 class CollectionRepository {
     public static function findAllPublished(): array {
         $pdo = Database::getConnection();
-        $sql = "SELECT c.*, u.full_name as curator_name, COUNT(ci.archive_item_id) as item_count
+        $sql = "SELECT c.id, c.title, c.slug, c.summary, c.description, c.curator_id, c.cover_image_url, c.is_published, c.created_at,
+                       u.full_name as curator_name, COUNT(ci.archive_item_id) as item_count
                 FROM collections c
                 JOIN users u ON u.id = c.curator_id
                 LEFT JOIN collection_items ci ON ci.collection_id = c.id
                 WHERE c.is_published = 1
-                GROUP BY c.id
+                GROUP BY c.id, c.title, c.slug, c.summary, c.description, c.curator_id, c.cover_image_url, c.is_published, c.created_at, u.full_name
                 ORDER BY c.created_at DESC";
         $stmt = $pdo->query($sql);
         return $stmt->fetchAll();
@@ -39,7 +40,6 @@ class CollectionRepository {
                     JOIN archive_items ai ON ai.id = ci.archive_item_id
                     LEFT JOIN media_assets m ON m.archive_item_id = ai.id AND m.is_primary = 1
                     WHERE ci.collection_id = ? AND ai.status = 'published' AND ai.visibility = 'public'
-                    GROUP BY ai.id
                     ORDER BY ci.item_order ASC";
         $itemStmt = $pdo->prepare($itemSql);
         $itemStmt->execute([$id]);

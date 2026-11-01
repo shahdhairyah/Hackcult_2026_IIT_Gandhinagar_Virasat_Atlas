@@ -3,13 +3,13 @@ Options -Indexes
 RewriteEngine On
 RewriteBase /
 
-# 1. Protect sensitive configuration and source files
+# 1. Protect sensitive configuration files
 <FilesMatch "^\.env|.*\.sql$">
     Order Deny,Allow
     Deny from all
 </FilesMatch>
 
-# 2. API Routing: Route any /api/* requests directly to api/index.php
+# 2. Route any /api/* or /api/v1/* requests directly to api/index.php
 RewriteCond %{REQUEST_URI} ^/api(/.*)?$ [NC]
 RewriteRule ^api(/.*)?$ api/index.php [QSA,L]
 

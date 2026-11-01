@@ -38,7 +38,11 @@ class AuthController {
             't' => time()
         ]));
 
-        AuditRepository::log($user['id'], 'user_login', 'user', $user['id']);
+        try {
+            AuditRepository::log($user['id'], 'user_login', 'user', $user['id']);
+        } catch (\Throwable $e) {
+            error_log('Audit log error on login: ' . $e->getMessage());
+        }
 
         JsonResponse::success([
             'user' => $user,

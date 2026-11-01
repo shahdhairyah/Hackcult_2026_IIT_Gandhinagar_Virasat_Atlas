@@ -46,7 +46,10 @@ CorsMiddleware::handle();
 // 3. Global Exception Handler
 set_exception_handler(function (Throwable $e) {
     error_log('Unhandled exception: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
-    JsonResponse::error('A server error occurred. Please try again later.', 'SERVER_ERROR', 500);
+    JsonResponse::error($e->getMessage(), 'SERVER_ERROR', 500, [
+        'file' => basename($e->getFile()),
+        'line' => $e->getLine()
+    ]);
 });
 
 // 4. Request parsing
@@ -55,6 +58,7 @@ $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 
 // Normalize route (strip trailing slash and project directory prefix if needed)
 $uri = rtrim($requestUri, '/');
+$uri = str_replace('/index.php', '', $uri);
 if ($uri === '') {
     $uri = '/';
 }
