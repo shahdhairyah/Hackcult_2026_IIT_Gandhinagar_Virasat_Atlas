@@ -13,9 +13,15 @@ client/dist/
 # Storage
 api/storage/uploads/*
 !api/storage/uploads/.htaccess
-!api/storage/uploads/*.svg
+!api/storage/uploads/502528d4a600143f9e618be63697942e.svg
+!api/storage/uploads/5d56a7ab21166b64e991fa800fc977ca.svg
+!api/storage/uploads/617ffac2448d8de8b006e464f61b8eb4.svg
+!api/storage/uploads/632c77085c30fc0954c073253b9d93e7.svg
+!api/storage/uploads/9c53d2def33872770510768760bbef30.svg
+!api/storage/uploads/bdb68509ebdab4547ed0a341e58e1799.svg
+!api/storage/uploads/802d4976664e277750a8c17321c2b159.svg
+!api/storage/uploads/c652fa8a8aca6817f76f456fb064a7cc.svg
 
 # Logs and system
 *.log
 .DS_Store
-
